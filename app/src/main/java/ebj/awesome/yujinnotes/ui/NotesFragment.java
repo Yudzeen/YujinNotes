@@ -78,8 +78,6 @@ public class NotesFragment extends Fragment {
             }
             recyclerView.setAdapter(new NotesRecyclerViewAdapter(notes, listener));
 
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-            recyclerView.addItemDecoration(dividerItemDecoration);
         }
         return view;
     }
