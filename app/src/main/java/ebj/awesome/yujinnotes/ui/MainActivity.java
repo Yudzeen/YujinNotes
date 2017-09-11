@@ -1,8 +1,9 @@
-package ebj.awesome.yujinnotes;
+package ebj.awesome.yujinnotes.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +15,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import ebj.awesome.yujinnotes.R;
+import ebj.awesome.yujinnotes.model.Note;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NotesFragment.OnListFragmentInteractionListener {
+
+    FragmentManager fragmentManager;
+    NotesFragment notesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO: 11/09/2017 Add Note
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +50,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_notes);
+
+        notesFragment = NotesFragment.newInstance(1);
+
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(
+                R.id.fragment_container,
+                notesFragment,
+                notesFragment.getTag()
+        ).commit();
+
     }
 
     @Override
@@ -85,7 +103,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_notes) {
-            Toast.makeText(this, "Notes", Toast.LENGTH_SHORT).show();
+            fragmentManager.beginTransaction().replace(
+                    R.id.fragment_container,
+                    notesFragment,
+                    notesFragment.getTag()
+            ).commit();
         } else if (id == R.id.nav_calendar) {
             Toast.makeText(this, "Calendar", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_settings) {
@@ -95,5 +117,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(Note note) {
+        Toast.makeText(getApplicationContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }
