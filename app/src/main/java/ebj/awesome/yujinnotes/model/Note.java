@@ -6,6 +6,9 @@ package ebj.awesome.yujinnotes.model;
 
 public class Note {
 
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "desc";
+
     private String title;
     private String description;
 

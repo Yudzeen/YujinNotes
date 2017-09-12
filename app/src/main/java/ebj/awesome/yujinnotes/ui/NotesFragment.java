@@ -30,6 +30,8 @@ public class NotesFragment extends Fragment {
 
     private List<Note> notes;
     private int columnCount = 1;
+
+    private RecyclerView recyclerView;
     private OnListFragmentInteractionListener listener;
 
     /**
@@ -65,21 +67,19 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notes_list, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_notes_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (columnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
-            }
-            recyclerView.setAdapter(new NotesRecyclerViewAdapter(notes, listener));
+        Context context = recyclerView.getContext();
 
+        if (columnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
         }
-        return view;
+        recyclerView.setAdapter(new NotesRecyclerViewAdapter(notes, listener));
+
+
+        return recyclerView;
     }
 
     @Override
@@ -102,5 +102,11 @@ public class NotesFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
 
         void onListFragmentInteraction(Note note);
+    }
+
+    public void addNote(Note note) {
+        notes.add(note);
+        NotesRecyclerViewAdapter adapter = (NotesRecyclerViewAdapter) recyclerView.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 }
