@@ -28,6 +28,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         titleField = (TextView) findViewById(R.id.titleField);
         descField = (TextView) findViewById(R.id.descField);
