@@ -20,10 +20,13 @@ public class Note implements Parcelable {
     private String title;
     private String description;
 
+    private boolean isDeleted;
+
     public Note(String title, String description) {
         this.title = title;
         this.description = description;
         this.id = ID_COUNT;
+        this.isDeleted = false;
         ID_COUNT++;
     }
 
@@ -51,6 +54,14 @@ public class Note implements Parcelable {
         this.description = description;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     /**Parcel**/
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -69,6 +80,7 @@ public class Note implements Parcelable {
         id = source.readInt();
         title = source.readString();
         description = source.readString();
+        isDeleted = source.readByte() == 1;
     }
 
     @Override
@@ -81,6 +93,7 @@ public class Note implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeByte((byte) (isDeleted ? 1 : 0));
     }
 
 

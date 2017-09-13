@@ -110,7 +110,11 @@ public class NotesFragment extends Fragment {
     }
 
     public void updateNote(Note note) {
-        notes.set(indexOf(note), note);
+        if (note.isDeleted()) {
+            notes.remove(indexOf(note));
+        } else {
+            notes.set(indexOf(note), note);
+        }
         notifyAdapter();
     }
 

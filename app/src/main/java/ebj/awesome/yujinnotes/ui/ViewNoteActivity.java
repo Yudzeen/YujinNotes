@@ -23,6 +23,7 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     MenuItem editBtn;
     MenuItem doneBtn;
+    MenuItem deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.view_note, menu);
         editBtn = menu.findItem(R.id.viewNote_action_edit);
         doneBtn = menu.findItem(R.id.viewNote_action_editDone);
+        deleteBtn = menu.findItem(R.id.viewNote_action_delete);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -64,11 +66,16 @@ public class ViewNoteActivity extends AppCompatActivity {
             setEditable(true);
             editBtn.setVisible(false);
             doneBtn.setVisible(true);
+            deleteBtn.setVisible(false);
+
         } else if (id == R.id.viewNote_action_editDone) {
             setEditable(false);
             doneBtn.setVisible(false);
             editBtn.setVisible(true);
+            deleteBtn.setVisible(true);
             updateNote();
+        } else if (id == R.id.viewNote_action_delete) {
+            deleteNote();
         }
 
         return super.onOptionsItemSelected(item);
@@ -83,6 +90,16 @@ public class ViewNoteActivity extends AppCompatActivity {
     private void updateNote() {
         note.setTitle(titleField.getText().toString());
         note.setDescription(descField.getText().toString());
+        prepareResultIntent();
+    }
+
+    private void deleteNote() {
+        note.setDeleted(true);
+        prepareResultIntent();
+        finish();
+    }
+
+    private void prepareResultIntent() {
         Intent intent = new Intent();
         intent.putExtra(Note.TAG, note);
         setResult(RESULT_OK, intent);

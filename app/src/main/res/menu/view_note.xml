@@ -8,7 +8,14 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_edit"
         android:title="Edit"
-        app:showAsAction="always|withText"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/viewNote_action_delete"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_delete"
+        android:title="Delete"
+        app:showAsAction="always"
         />
     <item
         android:id="@+id/viewNote_action_editDone"
@@ -16,5 +23,5 @@
         android:icon="@drawable/ic_done"
         android:title="Done"
         android:visible="false"
-        app:showAsAction="always|withText"/>
+        app:showAsAction="always"/>
 </menu>
