@@ -6,11 +6,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -64,12 +61,10 @@ public class ViewNoteActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.viewNote_action_edit) {
-            Log.i(ViewNoteActivity.class.getName(), "Editing");
             setEditable(true);
             editBtn.setVisible(false);
             doneBtn.setVisible(true);
         } else if (id == R.id.viewNote_action_editDone) {
-            Log.i(ViewNoteActivity.class.getName(), "Done");
             setEditable(false);
             doneBtn.setVisible(false);
             editBtn.setVisible(true);
@@ -95,11 +90,8 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     private void setEditable(boolean editable) {
 
-        setEditTextEnabled(titleField, editable);
         setEditTextEnabled(descField, editable);
-
-        Log.i(ViewNoteActivity.class.getName(), "1) Focused: " + descField.isFocused()
-                + "Focusable: " + descField.isFocusable());
+        setEditTextEnabled(titleField, editable);
 
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -112,8 +104,6 @@ public class ViewNoteActivity extends AppCompatActivity {
             inputMethodManager.hideSoftInputFromWindow(titleField.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
 
-        Log.i(ViewNoteActivity.class.getName(), "2) Focused: " + descField.isFocused()
-                + "Focusable: " + descField.isFocusable());
     }
 
     private void setEditTextEnabled(EditText editText, boolean enabled) {
