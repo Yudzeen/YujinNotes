@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ui.ViewNoteActivity">
+    <item
+        android:id="@+id/viewNote_action_edit"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_edit"
+        android:title="Edit"
+        app:showAsAction="always|withText"
+        />
+    <item
+        android:id="@+id/viewNote_action_editDone"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_done"
+        android:title="Done"
+        android:visible="false"
+        app:showAsAction="always|withText"/>
+</menu>

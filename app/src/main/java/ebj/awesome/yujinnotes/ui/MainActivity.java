@@ -18,6 +18,7 @@ import android.widget.Toast;
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
 import static ebj.awesome.yujinnotes.utils.RequestCodeConstants.CREATE_NOTE_REQUEST_CODE;
+import static ebj.awesome.yujinnotes.utils.RequestCodeConstants.UPDATE_NOTE_REQUEST_CODE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NotesFragment.OnListFragmentInteractionListener {
@@ -131,11 +132,21 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        if (requestCode == UPDATE_NOTE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Note note = data.getParcelableExtra(Note.TAG);
+                notesFragment.updateNote(note);
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onListFragmentInteraction(Note note) {
-        Toast.makeText(getApplicationContext(), note.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ViewNoteActivity.class);
+        intent.putExtra(Note.TAG, note);
+        startActivityForResult(intent, UPDATE_NOTE_REQUEST_CODE);
     }
+
 }

@@ -106,6 +106,27 @@ public class NotesFragment extends Fragment {
 
     public void addNote(Note note) {
         notes.add(note);
+        notifyAdapter();
+    }
+
+    public void updateNote(Note note) {
+        notes.set(indexOf(note), note);
+        notifyAdapter();
+    }
+
+    private int indexOf(Note note) {
+        int index = -1;
+        int id = note.getId();
+        for (int i = 0; i < notes.size(); i++) {
+            if (id == notes.get(i).getId()) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    private void notifyAdapter() {
         NotesRecyclerViewAdapter adapter = (NotesRecyclerViewAdapter) recyclerView.getAdapter();
         adapter.notifyDataSetChanged();
     }

@@ -24,6 +24,11 @@
             android:label="@string/title_activity_create_note"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".ui.ViewNoteActivity"
+            android:label="@string/title_activity_view_note"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

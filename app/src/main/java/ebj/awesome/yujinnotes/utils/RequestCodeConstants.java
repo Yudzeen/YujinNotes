@@ -7,5 +7,6 @@ package ebj.awesome.yujinnotes.utils;
 public class RequestCodeConstants {
 
     public static final int CREATE_NOTE_REQUEST_CODE = 100;
+    public static final int UPDATE_NOTE_REQUEST_CODE = 200;
 
 }
