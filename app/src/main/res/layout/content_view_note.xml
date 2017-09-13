@@ -9,6 +9,6 @@
     tools:context="ebj.awesome.yujinnotes.ui.ViewNoteActivity"
     tools:showIn="@layout/activity_view_note">
 
-    <include layout="@layout/fragment_input_note_details"/>
+    <include layout="@layout/fragment_note_details"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -11,6 +11,6 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <include layout="@layout/fragment_input_note_details"/>
+    <include layout="@layout/fragment_note_details"/>
 
 </android.support.constraint.ConstraintLayout>
