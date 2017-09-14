@@ -126,9 +126,8 @@ public class MainActivity extends AppCompatActivity
 
         if (requestCode == CREATE_NOTE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                String title = data.getStringExtra(Note.TITLE);
-                String description = data.getStringExtra(Note.DESCRIPTION);
-                notesFragment.addNote(new Note(title, description));
+                Note newNote = data.getParcelableExtra(Note.TAG);
+                notesFragment.addNote(newNote);
             }
         }
 

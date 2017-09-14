@@ -61,9 +61,10 @@ public class CreateNoteActivity extends AppCompatActivity {
         String title = titleField.getText().toString();
         String description = descField.getText().toString();
 
+        Note note = new Note(title, description);
+
         Intent intent = new Intent();
-        intent.putExtra(Note.TITLE, title);
-        intent.putExtra(Note.DESCRIPTION, description);
+        intent.putExtra(Note.TAG, note);
 
         setResult(RESULT_OK, intent);
         finish();
