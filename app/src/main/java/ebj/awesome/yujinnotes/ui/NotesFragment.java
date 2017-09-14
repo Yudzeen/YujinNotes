@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.R;
+import ebj.awesome.yujinnotes.db.DatabaseHelper;
 import ebj.awesome.yujinnotes.model.Note;
 
 /**
@@ -34,6 +35,8 @@ public class NotesFragment extends Fragment {
     private RecyclerView recyclerView;
     private OnListFragmentInteractionListener listener;
 
+    DatabaseHelper dbHelper;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -41,7 +44,6 @@ public class NotesFragment extends Fragment {
     public NotesFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static NotesFragment newInstance(int columnCount) {
         NotesFragment fragment = new NotesFragment();
@@ -59,9 +61,13 @@ public class NotesFragment extends Fragment {
             columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        notes = new ArrayList<>();
-        notes.add(new Note("Yujin", "Pogi"));
-        notes.add(new Note("Yoo jeen", "Handsome"));
+        dbHelper = new DatabaseHelper(getContext());
+        notes = dbHelper.getNotes();
+        if (!notes.isEmpty()) {
+            Note.ID_COUNT = notes.get(notes.size()-1).getId() + 1;
+        } else {
+            Note.ID_COUNT = 0;
+        }
     }
 
     @Override
@@ -77,7 +83,6 @@ public class NotesFragment extends Fragment {
             recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
         }
         recyclerView.setAdapter(new NotesRecyclerViewAdapter(notes, listener));
-
 
         return recyclerView;
     }
@@ -106,15 +111,19 @@ public class NotesFragment extends Fragment {
 
     public void addNote(Note note) {
         notes.add(note);
+        dbHelper.insertNote(note);
         notifyAdapter();
     }
 
     public void updateNote(Note note) {
         if (note.isDeleted()) {
             notes.remove(indexOf(note));
+            dbHelper.deleteNote(note.getId());
         } else {
             notes.set(indexOf(note), note);
+            dbHelper.updateNote(note);
         }
+
         notifyAdapter();
     }
 

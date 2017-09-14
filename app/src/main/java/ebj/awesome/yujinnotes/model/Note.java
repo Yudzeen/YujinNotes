@@ -11,23 +11,26 @@ public class Note implements Parcelable {
 
     public static final String TAG = Note.class.getName();
 
-    public static final String TITLE = "title";
-    public static final String DESCRIPTION = "desc";
-
     public static int ID_COUNT = 0;
 
     private int id;
     private String title;
     private String description;
-
-    private boolean isDeleted;
+    private boolean deleted;
 
     public Note(String title, String description) {
         this.title = title;
         this.description = description;
         this.id = ID_COUNT;
-        this.isDeleted = false;
+        this.deleted = false;
         ID_COUNT++;
+    }
+
+    public Note(int id, String title, String description, boolean deleted) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.deleted = deleted;
     }
 
     public int getId() {
@@ -55,11 +58,11 @@ public class Note implements Parcelable {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     /**Parcel**/
@@ -80,7 +83,7 @@ public class Note implements Parcelable {
         id = source.readInt();
         title = source.readString();
         description = source.readString();
-        isDeleted = source.readByte() == 1;
+        deleted = source.readByte() == 1;
     }
 
     @Override
@@ -93,7 +96,7 @@ public class Note implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeByte((byte) (isDeleted ? 1 : 0));
+        dest.writeByte((byte) (deleted ? 1 : 0));
     }
 
 
