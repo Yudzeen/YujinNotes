@@ -1,8 +1,10 @@
 package ebj.awesome.yujinnotes.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -75,7 +77,7 @@ public class ViewNoteActivity extends AppCompatActivity {
             deleteBtn.setVisible(true);
             updateNote();
         } else if (id == R.id.viewNote_action_delete) {
-            deleteNote();
+            showConfirmationDialog();
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,6 +99,26 @@ public class ViewNoteActivity extends AppCompatActivity {
         note.setDeleted(true);
         prepareResultIntent();
         finish();
+    }
+
+    private void showConfirmationDialog() {
+        AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+        confirmDialog.setTitle("Delete");
+        confirmDialog.setMessage("Are you sure you want to delete this note?");
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    deleteNote();
+                } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                    // not deleted
+                }
+            }
+        };
+        confirmDialog.setPositiveButton("Yes", listener);
+        confirmDialog.setNegativeButton("No", listener);
+
+        confirmDialog.show();
     }
 
     private void prepareResultIntent() {
