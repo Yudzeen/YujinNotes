@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.ui;
+package ebj.awesome.yujinnotes.notes.create;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,31 +7,41 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import ebj.awesome.yujinnotes.R;
+import ebj.awesome.yujinnotes.data.DatabaseHelper;
 import ebj.awesome.yujinnotes.model.Note;
 
-public class CreateNoteActivity extends AppCompatActivity {
+public class CreateNoteActivity extends AppCompatActivity implements CreateNoteContract.View {
 
-    TextView titleField;
-    TextView descField;
+    private EditText titleField;
+    private EditText descField;
+
+    private CreateNoteContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        titleField = (TextView) findViewById(R.id.titleField);
-        descField = (TextView) findViewById(R.id.descField);
+        titleField = (EditText) findViewById(R.id.titleField);
+        descField = (EditText) findViewById(R.id.descField);
+
+        titleField.requestFocus();
+
+        presenter = new CreateNotePresenter(this);
+        presenter.start();
     }
 
     @Override
@@ -53,25 +63,33 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onNoteCancelled();
+        onBackPressed();
         return true;
     }
 
-    public void onNoteDone() {
-        String title = titleField.getText().toString();
-        String description = descField.getText().toString();
+    @Override
+    public void setPresenter(CreateNoteContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
 
-        Note note = new Note(title, description);
+    @Override
+    public void showNoTitleError() {
+        Toast.makeText(this, "Title is required.", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void showNoteCreated(Note note) {
         Intent intent = new Intent();
         intent.putExtra(Note.TAG, note);
-
         setResult(RESULT_OK, intent);
         finish();
     }
 
-    public void onNoteCancelled() {
-        setResult(RESULT_CANCELED);
-        finish();
+    private void onNoteDone() {
+        String title = titleField.getText().toString();
+        String description = descField.getText().toString();
+        Note note = new Note(title, description);
+        presenter.onSubmit(note);
     }
+
 }

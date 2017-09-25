@@ -3,41 +3,37 @@ package ebj.awesome.yujinnotes.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Yujin on 11/09/2017.
- */
+import java.util.UUID;
 
 public class Note implements Parcelable {
 
-    public static final String TAG = Note.class.getName();
+    public static final String TAG = Note.class.getSimpleName();
 
-    public static int ID_COUNT = 0;
-
-    private int id;
+    private String id;
     private String title;
     private String description;
-    private boolean deleted;
+    private boolean trashed;
 
-    public Note(String title, String description) {
-        this.title = title;
-        this.description = description;
-        this.id = ID_COUNT;
-        this.deleted = false;
-        ID_COUNT++;
+    public Note(String title) {
+        this(UUID.randomUUID().toString(), title, "", false);
     }
 
-    public Note(int id, String title, String description, boolean deleted) {
+    public Note(String title, String description) {
+        this(UUID.randomUUID().toString(), title, description, false);
+    }
+
+    public Note(String id, String title, String description, boolean trashed) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.deleted = deleted;
+        this.trashed = trashed;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -57,12 +53,17 @@ public class Note implements Parcelable {
         this.description = description;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public boolean isTrashed() {
+        return trashed;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setTrashed(boolean trashed) {
+        this.trashed = trashed;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + " Title: " + title;
     }
 
     /**Parcel**/
@@ -80,10 +81,10 @@ public class Note implements Parcelable {
     };
 
     public Note(Parcel source) {
-        id = source.readInt();
+        id = source.readString();
         title = source.readString();
         description = source.readString();
-        deleted = source.readByte() == 1;
+        trashed = source.readByte() == 1;
     }
 
     @Override
@@ -93,10 +94,10 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeByte((byte) (deleted ? 1 : 0));
+        dest.writeByte((byte) (trashed ? 1 : 0));
     }
 
 

@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.ui;
+package ebj.awesome.yujinnotes.notes.detail;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,8 +15,9 @@ import android.widget.EditText;
 
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.util.FieldsHelper;
 
-public class ViewNoteActivity extends AppCompatActivity {
+public class NoteDetailsActivity extends AppCompatActivity implements NoteDetailsContract.View {
 
     Note note;
 
@@ -27,27 +28,32 @@ public class ViewNoteActivity extends AppCompatActivity {
     MenuItem doneBtn;
     MenuItem deleteBtn;
 
+    NoteDetailsContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.create_note_toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         titleField = (EditText) findViewById(R.id.titleField);
         descField = (EditText) findViewById(R.id.descField);
 
-        setEditable(false);
-
         Bundle data = getIntent().getExtras();
         note = data.getParcelable(Note.TAG);
 
         titleField.setText(note.getTitle());
         descField.setText(note.getDescription());
+
+        presenter = new NoteDetailsPresenter(this);
+        presenter.start();
+
     }
 
     @Override
@@ -65,19 +71,11 @@ public class ViewNoteActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.viewNote_action_edit) {
-            setEditable(true);
-            editBtn.setVisible(false);
-            doneBtn.setVisible(true);
-            deleteBtn.setVisible(false);
-
+            presenter.onEdit();
         } else if (id == R.id.viewNote_action_editDone) {
-            setEditable(false);
-            doneBtn.setVisible(false);
-            editBtn.setVisible(true);
-            deleteBtn.setVisible(true);
-            updateNote();
+            presenter.onEditDone();
         } else if (id == R.id.viewNote_action_delete) {
-            showConfirmationDialog();
+            presenter.onAttemptTrash();
         }
 
         return super.onOptionsItemSelected(item);
@@ -85,23 +83,37 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        onBackPressed();
         return super.onSupportNavigateUp();
     }
 
-    private void updateNote() {
-        note.setTitle(titleField.getText().toString());
-        note.setDescription(descField.getText().toString());
-        prepareResultIntent();
+    @Override
+    public void setPresenter(NoteDetailsContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
-    private void deleteNote() {
-        note.setDeleted(true);
-        prepareResultIntent();
-        finish();
+    @Override
+    public void setEditable(boolean editable) {
+        FieldsHelper.setEditTextEnabled(descField, editable);
+        FieldsHelper.setEditTextEnabled(titleField, editable);
+
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if (editable) {
+            titleField.setEllipsize(TextUtils.TruncateAt.END);
+            titleField.requestFocus();
+            inputMethodManager.showSoftInput(titleField, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            inputMethodManager.hideSoftInputFromWindow(titleField.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
+        editBtn.setVisible(!editable);
+        doneBtn.setVisible(editable);
+        deleteBtn.setVisible(!editable);
     }
 
-    private void showConfirmationDialog() {
+    @Override
+    public void displayTrashConfirmation() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delete");
         confirmDialog.setMessage("Are you sure you want to delete this note?");
@@ -109,7 +121,7 @@ public class ViewNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
-                    deleteNote();
+                    presenter.onConfirmTrash();
                 } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                     // not deleted
                 }
@@ -121,34 +133,32 @@ public class ViewNoteActivity extends AppCompatActivity {
         confirmDialog.show();
     }
 
-    private void prepareResultIntent() {
+    @Override
+    public void showNoteTrashed() {
+        note.setTrashed(true);
+        finishActivity();
+    }
+
+    @Override
+    public void showNoteUpdated() {
+        updateNoteDetails();
+        finishActivity();
+    }
+
+    private void updateNoteDetails() {
+        String title = titleField.getText().toString();
+        String description = descField.getText().toString();
+
+        note.setTitle(title);
+        note.setDescription(description);
+    }
+
+    private void finishActivity() {
         Intent intent = new Intent();
         intent.putExtra(Note.TAG, note);
         setResult(RESULT_OK, intent);
+        finish();
     }
 
-    private void setEditable(boolean editable) {
-
-        setEditTextEnabled(descField, editable);
-        setEditTextEnabled(titleField, editable);
-
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if (editable) {
-            titleField.setEllipsize(TextUtils.TruncateAt.END);
-            titleField.requestFocus();
-            inputMethodManager.showSoftInput(titleField, InputMethodManager.SHOW_IMPLICIT);
-        }
-        else {
-            inputMethodManager.hideSoftInputFromWindow(titleField.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-
-    }
-
-    private void setEditTextEnabled(EditText editText, boolean enabled) {
-        editText.setFocusable(enabled);
-        editText.setFocusableInTouchMode(enabled);
-        editText.setCursorVisible(enabled);
-    }
 
 }

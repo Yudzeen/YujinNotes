@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.utils;
+package ebj.awesome.yujinnotes.util;
 
 /**
  * Created by Yujin on 12/09/2017.

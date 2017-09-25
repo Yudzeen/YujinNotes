@@ -1,23 +1,26 @@
-package ebj.awesome.yujinnotes.ui;
+package ebj.awesome.yujinnotes.notes;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import ebj.awesome.yujinnotes.R;
-import ebj.awesome.yujinnotes.model.Note;
-import ebj.awesome.yujinnotes.ui.NotesFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
 
-public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder> {
+import ebj.awesome.yujinnotes.R;
+import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.util.NotesHelper;
 
-    private final List<Note> notes;
-    private final OnListFragmentInteractionListener listener;
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
 
-    public NotesRecyclerViewAdapter(List<Note> notes, OnListFragmentInteractionListener listener) {
+    private static final String TAG = NotesAdapter.class.getSimpleName();
+
+    private List<Note> notes;
+    private NoteInteractionListener listener;
+
+    public NotesAdapter(List<Note> notes, NoteInteractionListener listener) {
         this.notes = notes;
         this.listener = listener;
     }
@@ -25,7 +28,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_notes, parent, false);
+                .inflate(R.layout.list_item_note, parent, false);
         return new ViewHolder(view);
     }
 
@@ -39,10 +42,26 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
             @Override
             public void onClick(View v) {
                 if (null != listener) {
-                    listener.onListFragmentInteraction(holder.note);
+                    listener.OnNoteClicked(holder.note);
                 }
             }
         });
+    }
+
+    public void replaceNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
+    public void addNote(Note note) {
+        notes.add(note);
+    }
+
+    public void updateNote(Note note) {
+        notes.set(NotesHelper.indexOf(note, notes), note);
+    }
+
+    public void removeNote(Note note) {
+        notes.remove(NotesHelper.indexOf(note, notes));
     }
 
     @Override
@@ -51,6 +70,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public final View view;
         public final TextView titleView;
         public final TextView descView;
@@ -67,5 +87,11 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         public String toString() {
             return super.toString() + " '" + titleView.getText() + "'";
         }
+    }
+
+    public interface NoteInteractionListener {
+
+        void OnNoteClicked(Note note);
+
     }
 }
