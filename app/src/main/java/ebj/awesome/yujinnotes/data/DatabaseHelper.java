@@ -13,7 +13,7 @@ import ebj.awesome.yujinnotes.model.Note;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "YujinNotes.db";
 
     private static final String TABLE_NOTES = "notes";
@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_TRASHED = "trashed";
+    private static final String COLUMN_POSITION = "position";
 
     private static DatabaseHelper instance;
 
@@ -41,7 +42,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
                 COLUMN_ID + " TEXT," +
                 COLUMN_TITLE + " TEXT," +
                 COLUMN_DESCRIPTION + " TEXT," +
-                COLUMN_TRASHED + " INTEGER)";
+                COLUMN_TRASHED + " INTEGER," +
+                COLUMN_POSITION + " INTEGER)";
         db.execSQL(query);
     }
 
@@ -65,7 +67,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
             String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
             String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
             boolean deleted = cursor.getInt(cursor.getColumnIndex(COLUMN_TRASHED)) == 1;
-            Note note = new Note(id, title, description, deleted);
+            int position = cursor.getInt(cursor.getColumnIndex(COLUMN_POSITION));
+            Note note = new Note(id, title, description, deleted, position);
             notes.add(note);
             cursor.moveToNext();
         }
@@ -81,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
         values.put(COLUMN_TITLE, note.getTitle());
         values.put(COLUMN_DESCRIPTION, note.getDescription());
         values.put(COLUMN_TRASHED, note.isTrashed() ? 1 : 0);
+        values.put(COLUMN_POSITION, note.getPosition());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_NOTES, null, values);
     }
@@ -92,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
         values.put(COLUMN_TITLE, updatedNote.getTitle());
         values.put(COLUMN_DESCRIPTION, updatedNote.getDescription());
         values.put(COLUMN_TRASHED, updatedNote.isTrashed() ? 1 : 0);
+        values.put(COLUMN_POSITION, updatedNote.getPosition());
         String whereClause = COLUMN_ID + " = ?";
         String[] whereArgs = new String[] {updatedNote.getId()};
         db.update(TABLE_NOTES, values, whereClause, whereArgs);
