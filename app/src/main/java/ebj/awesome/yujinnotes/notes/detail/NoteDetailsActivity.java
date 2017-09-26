@@ -19,16 +19,16 @@ import ebj.awesome.yujinnotes.util.FieldsHelper;
 
 public class NoteDetailsActivity extends AppCompatActivity implements NoteDetailsContract.View {
 
-    Note note;
+    private Note note;
 
-    EditText titleField;
-    EditText descField;
+    private EditText titleField;
+    private EditText descField;
 
-    MenuItem editBtn;
-    MenuItem doneBtn;
-    MenuItem deleteBtn;
+    private MenuItem editBtn;
+    private MenuItem doneBtn;
+    private MenuItem deleteBtn;
 
-    NoteDetailsContract.Presenter presenter;
+    private NoteDetailsContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
 
         presenter = new NoteDetailsPresenter(this);
         presenter.start();
+
+        setEditableFields(false);
 
     }
 
@@ -94,22 +96,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
 
     @Override
     public void setEditable(boolean editable) {
-        FieldsHelper.setEditTextEnabled(descField, editable);
-        FieldsHelper.setEditTextEnabled(titleField, editable);
-
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if (editable) {
-            titleField.setEllipsize(TextUtils.TruncateAt.END);
-            titleField.requestFocus();
-            inputMethodManager.showSoftInput(titleField, InputMethodManager.SHOW_IMPLICIT);
-        } else {
-            inputMethodManager.hideSoftInputFromWindow(titleField.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-
-        editBtn.setVisible(!editable);
-        doneBtn.setVisible(editable);
-        deleteBtn.setVisible(!editable);
+        setEditableFields(editable);
+        setEditButtons(editable);
     }
 
     @Override
@@ -143,6 +131,27 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
     public void showNoteUpdated() {
         updateNoteDetails();
         finishActivity();
+    }
+
+    private void setEditableFields(boolean editable) {
+        FieldsHelper.setEditTextEnabled(descField, editable);
+        FieldsHelper.setEditTextEnabled(titleField, editable);
+
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if (editable) {
+            titleField.setEllipsize(TextUtils.TruncateAt.END);
+            titleField.requestFocus();
+            inputMethodManager.showSoftInput(titleField, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            inputMethodManager.hideSoftInputFromWindow(titleField.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void setEditButtons(boolean editable) {
+        editBtn.setVisible(!editable);
+        doneBtn.setVisible(editable);
+        deleteBtn.setVisible(!editable);
     }
 
     private void updateNoteDetails() {
