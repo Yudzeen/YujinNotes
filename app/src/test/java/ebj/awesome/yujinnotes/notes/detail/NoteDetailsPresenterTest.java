@@ -37,7 +37,15 @@ public class NoteDetailsPresenterTest {
     public void onEdit_displayEditableFields() {
         presenter.onEdit();
 
-        verify(view).setEditable();
+        verify(view).setEditable(true);
+    }
+
+    @Test
+    public void onEditDone_displayNonEditableFields() {
+        presenter.onEditDone();
+
+        verify(view).setEditable(false);
+        verify(view).showNoteUpdated();
     }
 
     @Test

@@ -54,14 +54,6 @@ public class NotesPresenterTest {
     }
 
     @Test
-    public void shouldShowNoteCreationSuccessMessage() {
-
-        presenter.addNote(new Note("Title", "Description"));
-
-        verify(view).showNoteCreatedMessage();
-    }
-
-    @Test
     public void onAttemptNoteCreation_showCreateNoteView() {
         presenter.attemptNoteCreation();
 
@@ -76,6 +68,63 @@ public class NotesPresenterTest {
 
         verify(view).displayNoteDetails(note);
     }
+
+    @Test
+    public void addNote_InsertInRepo() {
+        Note note = new Note("Title", "Description");
+
+        presenter.addNote(note);
+
+        verify(notesRepository).insertNote(note);
+    }
+
+    @Test
+    public void addNote_showNoteCreated() {
+        Note note = new Note("Title", "Description");
+
+        presenter.addNote(note);
+
+        verify(view).showNoteCreated(note);
+    }
+
+    @Test
+    public void addNote_showNoteCreatedMessage() {
+        Note note = new Note("Title", "Description");
+
+        presenter.addNote(note);
+
+        verify(view).showNoteCreatedMessage();
+    }
+
+    @Test
+    public void updateNote_updateInRepo() {
+        Note note = new Note("Title", "Description");
+
+        presenter.updateNote(note);
+
+        verify(notesRepository).updateNote(note);
+    }
+
+    @Test
+    public void updateNote_trashNote() {
+        Note note = new Note("Title", "Description");
+        note.setTrashed(true);
+
+        presenter.updateNote(note);
+
+        verify(view).showNoteTrashed(note);
+    }
+
+    @Test
+    public void updateNote_showTrashedNoteMessage() {
+        Note note = new Note("Title", "Description");
+        note.setTrashed(true);
+
+        presenter.updateNote(note);
+
+        verify(view).showNoteTrashedMessage();
+    }
+
 
 
 

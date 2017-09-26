@@ -41,4 +41,13 @@ public class CreateNotePresenterTest {
 
         verify(view).showNoTitleError();
     }
+
+    @Test
+    public void onSubmit_validNote() {
+        Note validNote = new Note("Yujin");
+
+        presenter.onSubmit(validNote);
+
+        verify(view).showNoteCreated(validNote);
+    }
 }
