@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ import static android.app.Activity.RESULT_OK;
 import static ebj.awesome.yujinnotes.util.RequestCodeConstants.CREATE_NOTE_REQUEST_CODE;
 import static ebj.awesome.yujinnotes.util.RequestCodeConstants.UPDATE_NOTE_REQUEST_CODE;
 
-public class NotesFragment extends Fragment implements NotesContract.View, NotesAdapter.NoteInteractionListener {
+public class NotesFragment extends Fragment implements NotesContract.View, NotesAdapter.NoteInteractionListener, NoteDragCallback.NoteDragListener {
 
     private static final String TAG = NotesFragment.class.getSimpleName();
 
@@ -37,6 +38,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private NotesAdapter.NoteInteractionListener listener;
+    private ItemTouchHelper itemTouchHelper;
 
     private NotesContract.Presenter presenter;
 
@@ -84,6 +86,10 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         adapter = new NotesAdapter(new ArrayList<Note>(0), listener);
         recyclerView.setAdapter(adapter);
 
+        ItemTouchHelper.Callback callback = new NoteDragCallback(this);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,18 +115,6 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         listener = null;
     }
 
-    /*@Override
-    public void onViewNote(Note note) {
-        Intent intent = new Intent(getActivity(), NoteDetailsActivity.class);
-        intent.putExtra(Note.TAG, note);
-        startActivityForResult(intent, UPDATE_NOTE_REQUEST_CODE);
-    }*/
-
-    @Override
-    public void onNoteClicked(Note note) {
-        presenter.onViewNote(note);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -139,19 +133,6 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    /*public void showNoteUpdated(Note note) {
-        int index = NotesHelper.indexOf(note, notes);
-        if (note.isTrashed()) {
-            notes.remove(index);
-            repository.deleteNote(note.getId());
-        } else {
-            notes.set(index, note);
-            repository.showNoteUpdated(note);
-        }
-
-        notifyAdapter();
-    }*/
 
     @Override
     public void displayNotes(List<Note> notes) {
@@ -203,4 +184,26 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     public void setPresenter(NotesContract.Presenter presenter) {
         this.presenter = presenter;
     }
+
+    @Override
+    public void onNoteClicked(Note note) {
+        presenter.onViewNote(note);
+    }
+
+    @Override
+    public void onNoteLongClicked(RecyclerView.ViewHolder holder) {
+        itemTouchHelper.startDrag(holder);
+    }
+
+    @Override
+    public void onNoteMove(int fromPosition, int toPosition) {
+        adapter.moveNote(fromPosition, toPosition);
+        presenter.updateNotePositions(adapter.getNotes());
+    }
+
+    @Override
+    public void onNoteSwiped(int position) {
+        presenter.trashNote(adapter.getNotes().get(position));
+    }
+
 }

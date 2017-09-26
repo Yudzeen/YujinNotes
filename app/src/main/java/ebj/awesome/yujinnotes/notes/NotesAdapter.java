@@ -1,11 +1,13 @@
 package ebj.awesome.yujinnotes.notes;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.R;
@@ -33,16 +35,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.note = notes.get(position);
-        holder.titleView.setText(notes.get(position).getTitle());
-        holder.descView.setText(notes.get(position).getDescription());
+        Note note = notes.get(position);
+        holder.note = note;
+        holder.titleView.setText(note.getTitle());
+        holder.descView.setText(note.getDescription());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != listener) {
+                if (listener != null) {
                     listener.onNoteClicked(holder.note);
                 }
+            }
+        });
+
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (listener != null) {
+                    listener.onNoteLongClicked(holder);
+                }
+                return true;
             }
         });
     }
@@ -53,14 +66,32 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     public void addNote(Note note) {
         notes.add(note);
+        note.setPosition(notes.size()-1);
     }
 
     public void updateNote(Note note) {
         notes.set(NotesHelper.indexOf(note, notes), note);
     }
 
-    public void removeNote(Note note) {
-        notes.remove(NotesHelper.indexOf(note, notes));
+    public Note removeNote(Note note) {
+        return notes.remove(NotesHelper.indexOf(note, notes));
+    }
+
+    public void moveNote(int fromPosition, int toPosition) {
+        Collections.swap(notes, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        updateNotePositions();
+    }
+
+    private void updateNotePositions() {
+        for (int i = 0; i < notes.size(); i++) {
+            Note note = notes.get(i);
+            note.setPosition(i);
+        }
+    }
+
+    public List<Note> getNotes() {
+        return notes;
     }
 
     @Override
@@ -68,7 +99,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return notes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements NoteViewHolder {
 
         public final View view;
         public final TextView titleView;
@@ -86,11 +117,30 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         public String toString() {
             return super.toString() + " '" + titleView.getText() + "'";
         }
+
+        @Override
+        public void onNoteSelected() {
+            view.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onNoteClear() {
+            view.setBackgroundColor(0);
+        }
     }
 
     public interface NoteInteractionListener {
 
         void onNoteClicked(Note note);
+        void onNoteLongClicked(RecyclerView.ViewHolder holder);
 
     }
+
+    public interface NoteViewHolder {
+
+        void onNoteSelected();
+        void onNoteClear();
+
+    }
+
 }

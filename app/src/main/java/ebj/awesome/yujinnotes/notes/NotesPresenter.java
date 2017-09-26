@@ -1,6 +1,10 @@
 package ebj.awesome.yujinnotes.notes;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.data.NotesRepository;
@@ -36,6 +40,8 @@ public class NotesPresenter implements NotesContract.Presenter {
                 unTrashedNotes.add(note);
             }
         }
+        sortByPosition(unTrashedNotes);
+        Log.i(TAG, unTrashedNotes.toString());
         view.displayNotes(unTrashedNotes);
     }
 
@@ -51,9 +57,9 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void addNote(Note note) {
-        notesRepository.insertNote(note);
         view.showNoteCreated(note);
         view.showNoteCreatedMessage();
+        notesRepository.insertNote(note);
     }
 
     @Override
@@ -72,4 +78,23 @@ public class NotesPresenter implements NotesContract.Presenter {
         view.showNoteTrashedMessage();
     }
 
+    @Override
+    public void updateNotePositions(List<Note> notes) {
+        for (int i = 0; i < notes.size(); i++) {
+            Note note = notes.get(i);
+            notesRepository.updateNote(note);
+        }
+    }
+
+    private void sortByPosition(List<Note> notes) {
+        Collections.sort(notes, new Comparator<Note>() {
+            @Override
+            public int compare(Note note1, Note note2) {
+                if (note1.getPosition() < note2.getPosition()) {
+                    return -1;
+                }
+                return 1;
+            }
+        });
+    }
 }

@@ -33,6 +33,7 @@ public interface NotesContract {
         void addNote(Note note);
         void updateNote(Note note);
         void trashNote(Note note);
+        void updateNotePositions(List<Note> notes);
 
     }
 
