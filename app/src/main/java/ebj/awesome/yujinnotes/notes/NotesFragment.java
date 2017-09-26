@@ -117,7 +117,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     }*/
 
     @Override
-    public void OnNoteClicked(Note note) {
+    public void onNoteClicked(Note note) {
         presenter.onViewNote(note);
     }
 

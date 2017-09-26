@@ -1,7 +1,6 @@
 package ebj.awesome.yujinnotes.notes;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 if (null != listener) {
-                    listener.OnNoteClicked(holder.note);
+                    listener.onNoteClicked(holder.note);
                 }
             }
         });
@@ -91,7 +90,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     public interface NoteInteractionListener {
 
-        void OnNoteClicked(Note note);
+        void onNoteClicked(Note note);
 
     }
 }
