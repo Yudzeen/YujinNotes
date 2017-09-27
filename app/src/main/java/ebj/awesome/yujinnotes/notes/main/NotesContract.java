@@ -29,7 +29,7 @@ public interface NotesContract {
 
         void loadNotes();
         void attemptNoteCreation();
-        void onViewNote(Note note);
+        void viewNote(Note note);
         void addNote(Note note);
         void updateNote(Note note);
         void deleteNote(Note note);

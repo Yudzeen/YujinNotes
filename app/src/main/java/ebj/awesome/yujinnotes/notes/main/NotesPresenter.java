@@ -7,10 +7,6 @@ import java.util.List;
 import ebj.awesome.yujinnotes.data.NotesRepository;
 import ebj.awesome.yujinnotes.model.Note;
 
-/**
- * Created by Yujin on 20/09/2017.
- */
-
 public class NotesPresenter implements NotesContract.Presenter {
 
     private static final String TAG = NotesPresenter.class.getSimpleName();
@@ -42,15 +38,15 @@ public class NotesPresenter implements NotesContract.Presenter {
     }
 
     @Override
-    public void onViewNote(Note note) {
+    public void viewNote(Note note) {
         view.displayNoteDetails(note);
     }
 
     @Override
     public void addNote(Note note) {
+        notesRepository.insertNote(note);
         view.showNoteCreated(note);
         view.showNoteCreatedMessage();
-        notesRepository.insertNote(note);
     }
 
     @Override

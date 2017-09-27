@@ -66,7 +66,7 @@ public class NotesPresenterTest {
     public void viewNote_showsNoteDetails() {
         Note note = new Note("Title");
 
-        presenter.onViewNote(note);
+        presenter.viewNote(note);
 
         verify(view).displayNoteDetails(note);
     }
