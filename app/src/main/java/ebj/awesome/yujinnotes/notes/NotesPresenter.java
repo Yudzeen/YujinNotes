@@ -74,6 +74,8 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void trashNote(Note note) {
+        note.setTrashed(true);
+        notesRepository.updateNote(note);
         view.showNoteTrashed(note);
         view.showNoteTrashedMessage();
     }
