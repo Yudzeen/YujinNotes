@@ -130,7 +130,6 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
 
     @Override
     public void showNoteDeleted() {
-//        note.setDeleted(true);
         finishViewActivity(DELETE_NOTE_ACTION_CODE);
     }
 

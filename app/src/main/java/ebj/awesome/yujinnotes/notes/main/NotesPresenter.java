@@ -55,17 +55,12 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void updateNote(Note note) {
-//        if (note.isDeleted()) {
-//            deleteNote(note);
-//        } else {
-            notesRepository.updateNote(note);
-            view.showNoteUpdated(note);
-//        }
+        notesRepository.updateNote(note);
+        view.showNoteUpdated(note);
     }
 
     @Override
     public void deleteNote(Note note) {
-//        note.setDeleted(true);
         notesRepository.deleteNote(note.getId());
         view.showNoteDeletedMessage();
         view.showNoteDeleted(note);
