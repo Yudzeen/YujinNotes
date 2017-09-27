@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -19,10 +19,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private static final String TAG = NotesAdapter.class.getSimpleName();
 
     private List<Note> notes;
+    private NotesContract.Presenter presenter;
     private NoteInteractionListener listener;
 
-    public NotesAdapter(List<Note> notes, NoteInteractionListener listener) {
+    public NotesAdapter(List<Note> notes, NotesContract.Presenter presenter, NoteInteractionListener listener) {
         this.notes = notes;
+        this.presenter = presenter;
         this.listener = listener;
     }
 
@@ -96,7 +98,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return notes.size();
+        return presenter.getNotesCount();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements NoteViewHolder {
@@ -127,6 +129,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         public void onNoteClear() {
             view.setBackgroundColor(0);
         }
+
+        @Override
+        public Note getNote() {
+            return note;
+        }
     }
 
     public interface NoteInteractionListener {
@@ -140,6 +147,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         void onNoteSelected();
         void onNoteClear();
+        Note getNote();
 
     }
 

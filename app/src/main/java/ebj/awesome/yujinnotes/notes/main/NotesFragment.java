@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,8 +24,11 @@ import ebj.awesome.yujinnotes.notes.create.CreateNoteActivity;
 import ebj.awesome.yujinnotes.notes.detail.NoteDetailsActivity;
 
 import static android.app.Activity.RESULT_OK;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.ACTION_CODE;
 import static ebj.awesome.yujinnotes.util.RequestCodeConstants.CREATE_NOTE_REQUEST_CODE;
-import static ebj.awesome.yujinnotes.util.RequestCodeConstants.UPDATE_NOTE_REQUEST_CODE;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.DELETE_NOTE_ACTION_CODE;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.UPDATE_NOTE_ACTION_CODE;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.VIEW_NOTE_REQUEST_CODE;
 
 public class NotesFragment extends Fragment implements NotesContract.View, NotesAdapter.NoteInteractionListener, NoteDragCallback.NoteDragListener {
 
@@ -40,7 +43,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     private NotesAdapter.NoteInteractionListener listener;
     private ItemTouchHelper itemTouchHelper;
 
-    private NotesContract.Presenter presenter;
+    NotesContract.Presenter presenter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,7 +86,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
         }
-        adapter = new NotesAdapter(new ArrayList<Note>(0), listener);
+        adapter = new NotesAdapter(new ArrayList<Note>(0), presenter, listener);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback callback = new NoteDragCallback(this);
@@ -117,11 +120,18 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == UPDATE_NOTE_REQUEST_CODE) {
+        if (requestCode == VIEW_NOTE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Note note = data.getParcelableExtra(Note.TAG);
-                presenter.updateNote(note);
+                int actionCode = data.getIntExtra(ACTION_CODE, 0);
+                switch (actionCode) {
+                    case DELETE_NOTE_ACTION_CODE:
+                        presenter.deleteNote(note);
+                        break;
+                    case UPDATE_NOTE_ACTION_CODE:
+                        presenter.updateNote(note);
+                        break;
+                }
             }
         }
 
@@ -131,6 +141,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
                 presenter.addNote(note);
             }
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -143,7 +154,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     public void displayNoteDetails(Note note) {
         Intent intent = new Intent(getActivity(), NoteDetailsActivity.class);
         intent.putExtra(Note.TAG, note);
-        startActivityForResult(intent, UPDATE_NOTE_REQUEST_CODE);
+        startActivityForResult(intent, VIEW_NOTE_REQUEST_CODE);
     }
 
     @Override
@@ -165,7 +176,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     }
 
     @Override
-    public void showNoteTrashed(Note note) {
+    public void showNoteDeleted(Note note) {
         adapter.removeNote(note);
         adapter.notifyDataSetChanged();
     }
@@ -176,8 +187,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     }
 
     @Override
-    public void showNoteTrashedMessage() {
-        Snackbar.make(getView(), "Note moved to trash.", Snackbar.LENGTH_SHORT).show();
+    public void showNoteDeletedMessage() {
+        Snackbar.make(getView(), "Note deleted.", Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -202,8 +213,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     }
 
     @Override
-    public void onNoteSwiped(int position) {
-        presenter.trashNote(adapter.getNotes().get(position));
+    public void onNoteSwiped(Note note) {
+        presenter.deleteNote(note);
     }
 
 }

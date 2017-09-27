@@ -16,9 +16,9 @@ public interface NoteDetailsContract {
 
         void showNoteUpdated();
 
-        void displayTrashConfirmation();
+        void displayDeleteConfirmation();
 
-        void showNoteTrashed();
+        void showNoteDeleted();
 
     }
 

@@ -13,14 +13,13 @@ import ebj.awesome.yujinnotes.model.Note;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository {
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "YujinNotes.db";
 
     private static final String TABLE_NOTES = "notes";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
     private static final String COLUMN_DESCRIPTION = "description";
-    private static final String COLUMN_TRASHED = "trashed";
     private static final String COLUMN_POSITION = "position";
 
     private static DatabaseHelper instance;
@@ -42,7 +41,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
                 COLUMN_ID + " TEXT," +
                 COLUMN_TITLE + " TEXT," +
                 COLUMN_DESCRIPTION + " TEXT," +
-                COLUMN_TRASHED + " INTEGER," +
                 COLUMN_POSITION + " INTEGER)";
         db.execSQL(query);
     }
@@ -51,6 +49,23 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(db);
+    }
+
+    @Override
+    public Note getNote(String id) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_ID + " = ?" ;
+        String[] whereArgs = new String[] {id};
+        Cursor cursor = db.rawQuery(query, whereArgs);
+        cursor.moveToFirst();
+
+        String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+        String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+        int position = cursor.getInt(cursor.getColumnIndex(COLUMN_POSITION));
+
+        cursor.close();
+
+        return new Note(id, title, description, position);
     }
 
     @Override
@@ -66,9 +81,31 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
             String id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
             String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
             String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
-            boolean deleted = cursor.getInt(cursor.getColumnIndex(COLUMN_TRASHED)) == 1;
             int position = cursor.getInt(cursor.getColumnIndex(COLUMN_POSITION));
-            Note note = new Note(id, title, description, deleted, position);
+            Note note = new Note(id, title, description, position);
+            notes.add(note);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        return notes;
+    }
+
+    @Override
+    public List<Note> getOrderedNotes() {
+        List<Note> notes = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        String orderBy = COLUMN_POSITION + " ASC";
+
+        Cursor cursor = db.query(TABLE_NOTES, null, null, null, null, null, orderBy);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            String id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+            String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+            String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+            int position = cursor.getInt(cursor.getColumnIndex(COLUMN_POSITION));
+            Note note = new Note(id, title, description, position);
             notes.add(note);
             cursor.moveToNext();
         }
@@ -83,7 +120,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
         values.put(COLUMN_ID, note.getId());
         values.put(COLUMN_TITLE, note.getTitle());
         values.put(COLUMN_DESCRIPTION, note.getDescription());
-        values.put(COLUMN_TRASHED, note.isTrashed() ? 1 : 0);
         values.put(COLUMN_POSITION, note.getPosition());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_NOTES, null, values);
@@ -95,7 +131,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
         ContentValues values = new ContentValues();
         values.put(COLUMN_TITLE, updatedNote.getTitle());
         values.put(COLUMN_DESCRIPTION, updatedNote.getDescription());
-        values.put(COLUMN_TRASHED, updatedNote.isTrashed() ? 1 : 0);
         values.put(COLUMN_POSITION, updatedNote.getPosition());
         String whereClause = COLUMN_ID + " = ?";
         String[] whereArgs = new String[] {updatedNote.getId()};
@@ -103,11 +138,21 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
     }
 
     @Override
-    public void deleteNote(int id) {
+    public void deleteNote(String id) {
         SQLiteDatabase db = getWritableDatabase();
         String whereClause = COLUMN_ID + " = ?";
-        String[] whereArgs = new String[] {Integer.toString(id)};
+        String[] whereArgs = new String[] {id};
         db.delete(TABLE_NOTES, whereClause, whereArgs);
+    }
+
+    @Override
+    public int getNotesCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NOTES, new String[]{COLUMN_ID}, null, null, null, null, null);
+        int rowCount = cursor.getCount();
+        cursor.close();
+
+        return rowCount;
     }
 
 }

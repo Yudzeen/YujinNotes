@@ -52,7 +52,7 @@ public class NoteDetailsPresenterTest {
     public void onDelete_displayDeleteConfirmation() {
         presenter.onAttemptTrash();
 
-        verify(view).displayTrashConfirmation();
+        verify(view).displayDeleteConfirmation();
     }
 
     @Test

@@ -3,6 +3,7 @@ package ebj.awesome.yujinnotes.notes.detail;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +15,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import ebj.awesome.yujinnotes.R;
+import ebj.awesome.yujinnotes.data.DatabaseHelper;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.util.FieldsHelper;
+
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.ACTION_CODE;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.DELETE_NOTE_ACTION_CODE;
+import static ebj.awesome.yujinnotes.util.RequestCodeConstants.UPDATE_NOTE_ACTION_CODE;
 
 public class NoteDetailsActivity extends AppCompatActivity implements NoteDetailsContract.View {
 
@@ -75,6 +81,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
         if (id == R.id.viewNote_action_edit) {
             presenter.onEdit();
         } else if (id == R.id.viewNote_action_editDone) {
+            updateNoteDetails();
             presenter.onEditDone();
         } else if (id == R.id.viewNote_action_delete) {
             presenter.onAttemptTrash();
@@ -101,7 +108,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
     }
 
     @Override
-    public void displayTrashConfirmation() {
+    public void displayDeleteConfirmation() {
         AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
         confirmDialog.setTitle("Delete");
         confirmDialog.setMessage("Are you sure you want to delete this note?");
@@ -122,15 +129,15 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
     }
 
     @Override
-    public void showNoteTrashed() {
-        note.setTrashed(true);
-        finishActivity();
+    public void showNoteDeleted() {
+//        note.setDeleted(true);
+        finishViewActivity(DELETE_NOTE_ACTION_CODE);
     }
 
     @Override
     public void showNoteUpdated() {
         updateNoteDetails();
-        finishActivity();
+        finishViewActivity(UPDATE_NOTE_ACTION_CODE);
     }
 
     private void setEditableFields(boolean editable) {
@@ -162,12 +169,11 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
         note.setDescription(description);
     }
 
-    private void finishActivity() {
+    private void finishViewActivity(int actionCode) {
         Intent intent = new Intent();
         intent.putExtra(Note.TAG, note);
+        intent.putExtra(ACTION_CODE, actionCode);
         setResult(RESULT_OK, intent);
         finish();
     }
-
-
 }

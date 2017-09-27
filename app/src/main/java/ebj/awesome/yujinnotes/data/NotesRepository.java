@@ -10,9 +10,12 @@ import ebj.awesome.yujinnotes.model.Note;
 
 public interface NotesRepository {
 
+    Note getNote(String id);
     List<Note> getNotes();
+    List<Note> getOrderedNotes();
     void insertNote(Note note);
     void updateNote(Note updatedNote);
-    void deleteNote(int id);
+    void deleteNote(String id);
+    int getNotesCount();
 
 }

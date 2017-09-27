@@ -12,23 +12,20 @@ public class Note implements Parcelable {
     private String id;
     private String title;
     private String description;
-    private boolean trashed;
-
     private int position;
 
     public Note(String title) {
-        this(UUID.randomUUID().toString(), title, "", false, -1);
+        this(UUID.randomUUID().toString(), title, "", -1);
     }
 
     public Note(String title, String description) {
-        this(UUID.randomUUID().toString(), title, description, false, -1);
+        this(UUID.randomUUID().toString(), title, description, -1);
     }
 
-    public Note(String id, String title, String description, boolean trashed, int position) {
+    public Note(String id, String title, String description, int position) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.trashed = trashed;
         this.position = position;
     }
 
@@ -54,14 +51,6 @@ public class Note implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isTrashed() {
-        return trashed;
-    }
-
-    public void setTrashed(boolean trashed) {
-        this.trashed = trashed;
     }
 
     public int getPosition() {
@@ -95,7 +84,6 @@ public class Note implements Parcelable {
         id = source.readString();
         title = source.readString();
         description = source.readString();
-        trashed = source.readByte() == 1;
         position = source.readInt();
     }
 
@@ -109,7 +97,6 @@ public class Note implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeByte((byte) (trashed ? 1 : 0));
         dest.writeInt(position);
     }
 

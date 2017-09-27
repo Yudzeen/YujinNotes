@@ -11,7 +11,7 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="ebj.awesome.yujinnotes.notes.NotesFragment"
+    tools:context="ebj.awesome.yujinnotes.notes.main.NotesFragment"
     tools:listitem="@layout/list_item_note">
 
 </android.support.v7.widget.RecyclerView>

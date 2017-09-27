@@ -1,10 +1,7 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.data.NotesRepository;
@@ -33,16 +30,10 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void loadNotes() {
-        List<Note> notes = notesRepository.getNotes();
-        List<Note> unTrashedNotes = new ArrayList<>();
-        for (Note note : notes) {
-            if (!note.isTrashed()) {
-                unTrashedNotes.add(note);
-            }
-        }
-        sortByPosition(unTrashedNotes);
-        Log.i(TAG, unTrashedNotes.toString());
-        view.displayNotes(unTrashedNotes);
+        List<Note> notes = notesRepository.getOrderedNotes();
+        Log.i(TAG, notes.size() + " notes received.");
+        Log.i(TAG, notes.toString());
+        view.displayNotes(notes);
     }
 
     @Override
@@ -64,20 +55,20 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void updateNote(Note note) {
-        notesRepository.updateNote(note);
-        if (note.isTrashed()) {
-            trashNote(note);
-        } else {
+//        if (note.isDeleted()) {
+//            deleteNote(note);
+//        } else {
+            notesRepository.updateNote(note);
             view.showNoteUpdated(note);
-        }
+//        }
     }
 
     @Override
-    public void trashNote(Note note) {
-        note.setTrashed(true);
-        notesRepository.updateNote(note);
-        view.showNoteTrashed(note);
-        view.showNoteTrashedMessage();
+    public void deleteNote(Note note) {
+//        note.setDeleted(true);
+        notesRepository.deleteNote(note.getId());
+        view.showNoteDeletedMessage();
+        view.showNoteDeleted(note);
     }
 
     @Override
@@ -88,15 +79,9 @@ public class NotesPresenter implements NotesContract.Presenter {
         }
     }
 
-    private void sortByPosition(List<Note> notes) {
-        Collections.sort(notes, new Comparator<Note>() {
-            @Override
-            public int compare(Note note1, Note note2) {
-                if (note1.getPosition() < note2.getPosition()) {
-                    return -1;
-                }
-                return 1;
-            }
-        });
+    @Override
+    public int getNotesCount() {
+        return notesRepository.getNotesCount();
     }
+
 }

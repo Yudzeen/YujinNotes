@@ -1,5 +1,8 @@
 package ebj.awesome.yujinnotes.notes.detail;
 
+import ebj.awesome.yujinnotes.data.NotesRepository;
+import ebj.awesome.yujinnotes.model.Note;
+
 /**
  * Created by Yujin on 24/09/2017.
  */
@@ -30,11 +33,11 @@ public class NoteDetailsPresenter implements NoteDetailsContract.Presenter {
 
     @Override
     public void onAttemptTrash() {
-        view.displayTrashConfirmation();
+        view.displayDeleteConfirmation();
     }
 
     @Override
     public void onConfirmTrash() {
-        view.showNoteTrashed();
+        view.showNoteDeleted();
     }
 }

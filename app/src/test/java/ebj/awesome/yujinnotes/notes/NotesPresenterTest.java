@@ -12,6 +12,8 @@ import java.util.List;
 
 import ebj.awesome.yujinnotes.data.NotesRepository;
 import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.notes.main.NotesContract;
+import ebj.awesome.yujinnotes.notes.main.NotesPresenter;
 
 import static org.mockito.Mockito.*;
 
@@ -106,25 +108,15 @@ public class NotesPresenterTest {
     }
 
     @Test
-    public void updateNote_trashNote() {
-        Note note = new Note("Title", "Description");
-        note.setTrashed(true);
+    public void deleteNote_deleteInRepoAndShowDeletedMessage() {
+        Note note = new Note("Title");
 
-        presenter.updateNote(note);
+        presenter.deleteNote(note);
 
-        verify(view).showNoteTrashed(note);
+        verify(notesRepository).deleteNote(note.getId());
+        verify(view).showNoteDeletedMessage();
+        verify(view).showNoteDeleted(note);
     }
-
-    @Test
-    public void updateNote_showTrashedNoteMessage() {
-        Note note = new Note("Title", "Description");
-        note.setTrashed(true);
-
-        presenter.updateNote(note);
-
-        verify(view).showNoteTrashedMessage();
-    }
-
 
 
 

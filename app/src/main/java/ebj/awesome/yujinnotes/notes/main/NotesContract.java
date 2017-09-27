@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ public interface NotesContract {
         void showCreateNoteView();
         void showNoteCreated(Note note);
         void showNoteUpdated(Note note);
-        void showNoteTrashed(Note note);
+        void showNoteDeleted(Note note);
         void showNoteCreatedMessage();
-        void showNoteTrashedMessage();
+        void showNoteDeletedMessage();
 
     }
 
@@ -32,8 +32,9 @@ public interface NotesContract {
         void onViewNote(Note note);
         void addNote(Note note);
         void updateNote(Note note);
-        void trashNote(Note note);
+        void deleteNote(Note note);
         void updateNotePositions(List<Note> notes);
+        int getNotesCount();
 
     }
 

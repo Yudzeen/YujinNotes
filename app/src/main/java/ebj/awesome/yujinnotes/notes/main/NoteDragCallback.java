@@ -1,11 +1,11 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import static ebj.awesome.yujinnotes.notes.NotesAdapter.*;
+import ebj.awesome.yujinnotes.model.Note;
 
 /**
  * Created by Yujin on 26/09/2017.
@@ -46,7 +46,10 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        listener.onNoteSwiped(viewHolder.getAdapterPosition());
+        if (viewHolder instanceof NotesAdapter.NoteViewHolder) {
+            NotesAdapter.NoteViewHolder noteViewHolder = (NotesAdapter.NoteViewHolder) viewHolder;
+            listener.onNoteSwiped(noteViewHolder.getNote());
+        }
     }
 
     @Override
@@ -62,8 +65,8 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder instanceof NoteViewHolder) {
-                NoteViewHolder noteViewHolder = (NoteViewHolder) viewHolder;
+            if (viewHolder instanceof NotesAdapter.NoteViewHolder) {
+                NotesAdapter.NoteViewHolder noteViewHolder = (NotesAdapter.NoteViewHolder) viewHolder;
                 noteViewHolder.onNoteSelected();
             }
         }
@@ -75,8 +78,8 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
         super.clearView(recyclerView, viewHolder);
 
         viewHolder.itemView.setAlpha(ALPHA_FULL);
-        if (viewHolder instanceof NoteViewHolder) {
-            NoteViewHolder noteViewHolder = (NoteViewHolder) viewHolder;
+        if (viewHolder instanceof NotesAdapter.NoteViewHolder) {
+            NotesAdapter.NoteViewHolder noteViewHolder = (NotesAdapter.NoteViewHolder) viewHolder;
             noteViewHolder.onNoteClear();
         }
     }
@@ -84,7 +87,7 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
     public interface NoteDragListener {
 
         void onNoteMove(int fromPosition, int toPosition);
-        void onNoteSwiped(int position);
+        void onNoteSwiped(Note note);
 
     }
 }
