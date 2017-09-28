@@ -27,8 +27,6 @@ public class NotesPresenter implements NotesContract.Presenter {
     @Override
     public void loadNotes() {
         List<Note> notes = notesRepository.getOrderedNotes();
-        Log.i(TAG, notes.size() + " notes received.");
-        Log.i(TAG, notes.toString());
         view.displayNotes(notes);
     }
 
