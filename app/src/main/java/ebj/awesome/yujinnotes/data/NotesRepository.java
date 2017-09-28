@@ -10,6 +10,7 @@ import ebj.awesome.yujinnotes.model.Note;
 
 public interface NotesRepository {
 
+    Note getNote(int position);
     Note getNote(String id);
     List<Note> getNotes();
     List<Note> getOrderedNotes();

@@ -52,6 +52,23 @@ public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository 
     }
 
     @Override
+    public Note getNote(int position) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_POSITION + " = ?" ;
+        String[] whereArgs = new String[] {Integer.toString(position)};
+        Cursor cursor = db.rawQuery(query, whereArgs);
+        cursor.moveToFirst();
+
+        String id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+        String title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+        String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+
+        cursor.close();
+
+        return new Note(id, title, description, position);
+    }
+
+    @Override
     public Note getNote(String id) {
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NOTES + " WHERE " + COLUMN_ID + " = ?" ;
