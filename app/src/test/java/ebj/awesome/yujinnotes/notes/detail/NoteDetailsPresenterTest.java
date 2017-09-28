@@ -59,7 +59,7 @@ public class NoteDetailsPresenterTest {
     public void onConfirmDelete_removeNote() {
         presenter.onConfirmTrash();
 
-
+        verify(view).showNoteDeleted();
     }
 
 }
