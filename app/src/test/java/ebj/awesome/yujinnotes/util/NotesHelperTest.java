@@ -56,4 +56,20 @@ public class NotesHelperTest {
         }
     }
 
+    @Test
+    public void shouldSwapNotePosition() {
+        Note from = new Note("From");
+        final int fromPosition = 0;
+        from.setPosition(fromPosition);
+
+        Note to = new Note("To");
+        final int toPosition = 1;
+        to.setPosition(toPosition);
+
+        NotesHelper.swapPosition(from, to);
+
+        assertEquals(from.getPosition(), toPosition);
+        assertEquals(to.getPosition(), fromPosition);
+    }
+
 }

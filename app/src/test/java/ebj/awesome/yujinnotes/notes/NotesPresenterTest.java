@@ -1,5 +1,6 @@
 package ebj.awesome.yujinnotes.notes;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +17,8 @@ import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.notes.main.NotesContract;
 import ebj.awesome.yujinnotes.notes.main.NotesPresenter;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Yujin on 21/09/2017.
@@ -48,11 +51,20 @@ public class NotesPresenterTest {
 
     @Test
     public void shouldPassNotesToView() {
-        when(notesRepository.getNotes()).thenReturn(MANY_NOTES);
+        when(notesRepository.getOrderedNotes()).thenReturn(MANY_NOTES);
 
         presenter.loadNotes();
 
         verify(view).displayNotes(MANY_NOTES);
+    }
+
+    @Test
+    public void handleEmptyNotes() {
+        when(notesRepository.getOrderedNotes()).thenReturn(new ArrayList<Note>());
+
+        presenter.loadNotes();
+
+        verify(view).displayNoNotes();
     }
 
     @Test
@@ -99,12 +111,34 @@ public class NotesPresenterTest {
     }
 
     @Test
+    public void addNote_NoteMustBeLastPosition() {
+        Note note = new Note("Title", "Description");
+        final int numNotes = 3;
+        when(notesRepository.getNotesCount()).thenReturn(numNotes);
+
+        presenter.addNote(note);
+
+        // should be equal to 3 due to 0 indexing
+        Assert.assertEquals(note.getPosition(), numNotes);
+
+    }
+
+    @Test
     public void updateNote_updateInRepo() {
         Note note = new Note("Title", "Description");
 
         presenter.updateNote(note);
 
         verify(notesRepository).updateNote(note);
+    }
+
+    @Test
+    public void updateNote_showNoteUpdated() {
+        Note note = new Note("Title", "Description");
+
+        presenter.updateNote(note);
+
+        verify(view).showNoteUpdated(note);
     }
 
     @Test
@@ -117,6 +151,44 @@ public class NotesPresenterTest {
         verify(view).showNoteDeletedMessage();
         verify(view).showNoteDeleted(note);
     }
+
+    @Test
+    public void moveNote_updateNotesInRepo() {
+        Note from = new Note("From");
+        Note to = new Note("To");
+
+        presenter.moveNote(from, to);
+
+        verify(notesRepository).updateNote(from);
+        verify(notesRepository).updateNote(to);
+    }
+
+    @Test
+    public void moveNote_showNoteMoved() {
+        Note from = new Note("From");
+        Note to = new Note("To");
+
+        presenter.moveNote(from, to);
+
+        verify(view).showNoteMoved(from, to);
+    }
+
+    @Test
+    public void getNote_repoGetNote() {
+        final int position = 3;
+
+        presenter.getNote(position);
+
+        verify(notesRepository).getNote(position);
+    }
+
+    @Test
+    public void getNotesCount_repoGetNotesCount() {
+        presenter.getNotesCount();
+
+        verify(notesRepository).getNotesCount();
+    }
+
 
 
 
