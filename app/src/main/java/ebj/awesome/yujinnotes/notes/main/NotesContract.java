@@ -15,6 +15,7 @@ public interface NotesContract {
     interface View extends BaseView<Presenter> {
 
         void displayNotes(List<Note> notes);
+        void displayNoNotes();
         void displayNoteDetails(Note note);
         void showCreateNoteView();
         void showNoteCreated(Note note);
@@ -22,6 +23,7 @@ public interface NotesContract {
         void showNoteDeleted(Note note);
         void showNoteCreatedMessage();
         void showNoteDeletedMessage();
+        void showNoteMoved(Note from, Note to);
 
     }
 
@@ -33,7 +35,8 @@ public interface NotesContract {
         void addNote(Note note);
         void updateNote(Note note);
         void deleteNote(Note note);
-        void updateNotePositions(List<Note> notes);
+        void moveNote(Note from, Note to);
+        Note getNote(int position);
         int getNotesCount();
 
     }

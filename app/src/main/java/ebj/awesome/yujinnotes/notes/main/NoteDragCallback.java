@@ -7,13 +7,11 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 
 import ebj.awesome.yujinnotes.model.Note;
 
-/**
- * Created by Yujin on 26/09/2017.
- */
-
 public class NoteDragCallback extends ItemTouchHelper.Callback {
 
-    public static final float ALPHA_FULL = 1.0f;
+    public static final String TAG = NoteDragCallback.class.getSimpleName();
+
+    private static final float ALPHA_FULL = 1.0f;
 
     private final NoteDragListener listener;
 
@@ -40,7 +38,12 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
         if (viewHolder.getItemViewType() != target.getItemViewType()) {
             return false;
         }
-        listener.onNoteMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        if (viewHolder instanceof NotesAdapter.NoteViewHolder && target instanceof NotesAdapter.NoteViewHolder) {
+            NotesAdapter.NoteViewHolder noteViewHolder = (NotesAdapter.NoteViewHolder) viewHolder;
+            NotesAdapter.NoteViewHolder noteTarget = (NotesAdapter.NoteViewHolder) target;
+            listener.onNoteMove(noteViewHolder.getNote(), noteTarget.getNote());
+        }
+
         return true;
     }
 
@@ -86,7 +89,7 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
 
     public interface NoteDragListener {
 
-        void onNoteMove(int fromPosition, int toPosition);
+        void onNoteMove(Note from, Note to);
         void onNoteSwiped(Note note);
 
     }

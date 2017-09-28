@@ -10,11 +10,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.R;
@@ -38,12 +38,11 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     private int columnCount = 1;
 
-    private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private NotesAdapter.NoteInteractionListener listener;
     private ItemTouchHelper itemTouchHelper;
 
-    NotesContract.Presenter presenter;
+    private NotesContract.Presenter presenter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -77,7 +76,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_notes_list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.fragment_notes_list);
 
         Context context = recyclerView.getContext();
 
@@ -86,7 +85,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
         }
-        adapter = new NotesAdapter(new ArrayList<Note>(0), presenter, listener);
+        adapter = new NotesAdapter(presenter, listener);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback callback = new NoteDragCallback(this);
@@ -131,6 +130,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
                     case UPDATE_NOTE_ACTION_CODE:
                         presenter.updateNote(note);
                         break;
+                    default:
+                        Log.i(TAG, "View note returns unknown action code.");
                 }
             }
         }
@@ -147,7 +148,12 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void displayNotes(List<Note> notes) {
-        adapter.replaceNotes(notes);
+
+    }
+
+    @Override
+    public void displayNoNotes() {
+
     }
 
     @Override
@@ -165,30 +171,41 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void showNoteCreated(Note note) {
-        adapter.addNote(note);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(note.getPosition());
+        Log.i(TAG, note.getTitle() + " created");
     }
 
     @Override
     public void showNoteUpdated(Note note) {
-        adapter.updateNote(note);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemChanged(note.getPosition());
+        Log.i(TAG, note.getTitle() + " updated");
     }
 
     @Override
     public void showNoteDeleted(Note note) {
-        adapter.removeNote(note);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRemoved(note.getPosition());
+        Log.i(TAG, note.getTitle() + " deleted.");
     }
 
     @Override
     public void showNoteCreatedMessage() {
-        Snackbar.make(getView(), "Note created successfully.", Snackbar.LENGTH_SHORT).show();
+        if (getView() != null) {
+            Snackbar.make(getView(), "Note created successfully.", Snackbar.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
     public void showNoteDeletedMessage() {
-        Snackbar.make(getView(), "Note deleted.", Snackbar.LENGTH_SHORT).show();
+        if (getView() != null) {
+            Snackbar.make(getView(), "Note deleted.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void showNoteMoved(Note from, Note to) {
+        adapter.notifyItemMoved(from.getPosition(), to.getPosition());
+        Log.i(TAG, "Note ["+from.getPosition()+"]" + from.getTitle() +  " swapped with ["+to.getPosition()+"]" + to.getTitle());
     }
 
     @Override
@@ -207,9 +224,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     }
 
     @Override
-    public void onNoteMove(int fromPosition, int toPosition) {
-        adapter.moveNote(fromPosition, toPosition);
-        presenter.updateNotePositions(adapter.getNotes());
+    public void onNoteMove(Note from, Note to) {
+        presenter.moveNote(from, to);
     }
 
     @Override

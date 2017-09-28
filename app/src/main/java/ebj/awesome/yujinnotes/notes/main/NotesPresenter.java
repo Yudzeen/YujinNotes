@@ -1,15 +1,12 @@
 package ebj.awesome.yujinnotes.notes.main;
 
-import android.util.Log;
-
 import java.util.List;
 
 import ebj.awesome.yujinnotes.data.NotesRepository;
 import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.util.NotesHelper;
 
 public class NotesPresenter implements NotesContract.Presenter {
-
-    private static final String TAG = NotesPresenter.class.getSimpleName();
 
     private NotesContract.View view;
     private NotesRepository notesRepository;
@@ -27,7 +24,11 @@ public class NotesPresenter implements NotesContract.Presenter {
     @Override
     public void loadNotes() {
         List<Note> notes = notesRepository.getOrderedNotes();
-        view.displayNotes(notes);
+        if (notes.isEmpty()) {
+            view.displayNoNotes();
+        } else {
+            view.displayNotes(notes);
+        }
     }
 
     @Override
@@ -42,6 +43,7 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void addNote(Note note) {
+        note.setPosition(notesRepository.getNotesCount());
         notesRepository.insertNote(note);
         view.showNoteCreated(note);
         view.showNoteCreatedMessage();
@@ -61,16 +63,23 @@ public class NotesPresenter implements NotesContract.Presenter {
     }
 
     @Override
-    public void updateNotePositions(List<Note> notes) {
-        for (int i = 0; i < notes.size(); i++) {
-            Note note = notes.get(i);
-            notesRepository.updateNote(note);
-        }
+    public void moveNote(Note from, Note to) {
+        NotesHelper.swapPosition(from, to);
+        notesRepository.updateNote(from);
+        notesRepository.updateNote(to);
+        view.showNoteMoved(from, to);
+    }
+
+    @Override
+    public Note getNote(int position) {
+        return notesRepository.getNote(position);
     }
 
     @Override
     public int getNotesCount() {
         return notesRepository.getNotesCount();
     }
+
+
 
 }
