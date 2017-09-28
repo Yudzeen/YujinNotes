@@ -18,4 +18,10 @@ public class NotesHelper {
         return index;
     }
 
+    public static void swapPosition(Note from, Note to) {
+        int temp = from.getPosition();
+        from.setPosition(to.getPosition());
+        to.setPosition(temp);
+    }
+
 }
