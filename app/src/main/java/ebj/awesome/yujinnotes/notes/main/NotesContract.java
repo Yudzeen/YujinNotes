@@ -36,8 +36,9 @@ public interface NotesContract {
         void updateNote(Note note);
         void deleteNote(Note note);
         void moveNote(Note from, Note to);
-        Note getNote(int position);
-        int getNotesCount();
+
+        // update all positions (used after deletion)
+        void updatePositions(List<Note> notes);
 
     }
 
