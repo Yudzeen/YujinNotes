@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import ebj.awesome.yujinnotes.R;
-import ebj.awesome.yujinnotes.data.DatabaseHelper;
 import ebj.awesome.yujinnotes.model.Note;
 
 public class CreateNoteActivity extends AppCompatActivity implements CreateNoteContract.View {
