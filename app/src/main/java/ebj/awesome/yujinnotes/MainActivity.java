@@ -1,7 +1,9 @@
 package ebj.awesome.yujinnotes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -63,8 +65,9 @@ public class MainActivity extends AppCompatActivity
             showNotesFragment();
         } else if (id == R.id.nav_calendar) {
             fragmentManager.beginTransaction().remove(notesFragment).commit();
+            Toast.makeText(this, "Feature soon to be added.", Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_settings) {
-            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+            showSettingsActivity();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -78,6 +81,11 @@ public class MainActivity extends AppCompatActivity
                 notesFragment,
                 notesFragment.getTag()
         ).commit();
+    }
+
+    private void showSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
 }
