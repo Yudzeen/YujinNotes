@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.notes;
+package ebj.awesome.yujinnotes.notes.main;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -173,21 +173,6 @@ public class NotesPresenterTest {
         verify(view).showNoteMoved(from, to);
     }
 
-    @Test
-    public void getNote_repoGetNote() {
-        final int position = 3;
-
-        presenter.getNote(position);
-
-        verify(notesRepository).getNote(position);
-    }
-
-    @Test
-    public void getNotesCount_repoGetNotesCount() {
-        presenter.getNotesCount();
-
-        verify(notesRepository).getNotesCount();
-    }
 
 
 
