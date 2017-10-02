@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes.data;
+package ebj.awesome.yujinnotes.data.local;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import ebj.awesome.yujinnotes.data.NotesRepository;
 import ebj.awesome.yujinnotes.model.Note;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements NotesRepository {
