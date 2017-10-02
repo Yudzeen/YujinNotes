@@ -2,7 +2,9 @@ package ebj.awesome.yujinnotes.notes.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,10 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ebj.awesome.yujinnotes.R;
-import ebj.awesome.yujinnotes.data.DatabaseHelper;
+import ebj.awesome.yujinnotes.data.local.DatabaseHelper;
+import ebj.awesome.yujinnotes.data.web.ServerDatabase;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.notes.create.CreateNoteActivity;
 import ebj.awesome.yujinnotes.notes.detail.NoteDetailsActivity;
@@ -67,7 +71,15 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
             columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        presenter = new NotesPresenter(this, DatabaseHelper.getInstance(getActivity()));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean useWebServer = preferences.getBoolean(getString(R.string.db_switch_key), false);
+
+        if (useWebServer) {
+            presenter = new AsyncNotesPresenter(this, ServerDatabase.getInstance());
+        } else {
+            presenter = new NotesPresenter(this, DatabaseHelper.getInstance(getActivity()));
+        }
+
         presenter.start();
 
     }
@@ -85,7 +97,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
         }
-        adapter = new NotesAdapter(presenter, listener);
+        adapter = new NotesAdapter(new ArrayList<Note>(), presenter, listener);
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.Callback callback = new NoteDragCallback(this);
@@ -139,6 +151,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         if (requestCode == CREATE_NOTE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Note note = data.getParcelableExtra(Note.TAG);
+                note.setPosition(adapter.getItemCount());
                 presenter.addNote(note);
             }
         }
@@ -148,12 +161,13 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void displayNotes(List<Note> notes) {
-
+        adapter.replaceNotes(notes);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void displayNoNotes() {
-
+        Log.i(TAG, "You have no notes.");
     }
 
     @Override
@@ -171,18 +185,21 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void showNoteCreated(Note note) {
+        adapter.addNote(note);
         adapter.notifyItemInserted(note.getPosition());
         Log.i(TAG, note.getTitle() + " created");
     }
 
     @Override
     public void showNoteUpdated(Note note) {
+        adapter.updateNote(note);
         adapter.notifyItemChanged(note.getPosition());
         Log.i(TAG, note.getTitle() + " updated");
     }
 
     @Override
     public void showNoteDeleted(Note note) {
+        adapter.deleteNote(note);
         adapter.notifyItemRemoved(note.getPosition());
         Log.i(TAG, note.getTitle() + " deleted.");
     }
@@ -204,6 +221,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void showNoteMoved(Note from, Note to) {
+        adapter.updateNote(from);
+        adapter.updateNote(to);
         adapter.notifyItemMoved(from.getPosition(), to.getPosition());
         Log.i(TAG, "Note ["+from.getPosition()+"]" + from.getTitle() +  " swapped with ["+to.getPosition()+"]" + to.getTitle());
     }
