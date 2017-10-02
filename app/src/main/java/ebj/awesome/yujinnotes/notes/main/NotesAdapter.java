@@ -18,10 +18,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     private static final String TAG = NotesAdapter.class.getSimpleName();
 
+    private List<Note> notes;
     private NotesContract.Presenter presenter;
     private NoteInteractionListener listener;
 
-    public NotesAdapter(NotesContract.Presenter presenter, NoteInteractionListener listener) {
+    public NotesAdapter(List<Note> notes, NotesContract.Presenter presenter, NoteInteractionListener listener) {
+        this.notes = notes;
         this.presenter = presenter;
         this.listener = listener;
     }
@@ -35,7 +37,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Note note = presenter.getNote(position);
+        Note note = notes.get(position);
         holder.note = note;
         holder.titleView.setText(note.getTitle());
         holder.descView.setText(note.getDescription());
@@ -62,7 +64,24 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return presenter.getNotesCount();
+        return notes.size();
+    }
+
+    public void addNote(Note note) {
+        notes.add(note);
+    }
+
+    public void updateNote(Note note) {
+        notes.set(note.getPosition(), note);
+    }
+
+    public void deleteNote(Note note) {
+        notes.remove(note.getPosition());
+        presenter.updatePositions(notes);
+    }
+
+    public void replaceNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements NoteViewHolder {
