@@ -71,15 +71,12 @@ public class NotesPresenter implements NotesContract.Presenter {
     }
 
     @Override
-    public Note getNote(int position) {
-        return notesRepository.getNote(position);
+    public void updatePositions(List<Note> notes) {
+        NotesHelper.updatePositions(notes);
+        for (Note note: notes) {
+            notesRepository.updateNote(note);
+        }
     }
-
-    @Override
-    public int getNotesCount() {
-        return notesRepository.getNotesCount();
-    }
-
 
 
 }
