@@ -3,7 +3,6 @@ package ebj.awesome.yujinnotes.notes.detail;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import ebj.awesome.yujinnotes.R;
-import ebj.awesome.yujinnotes.data.DatabaseHelper;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.util.FieldsHelper;
 
