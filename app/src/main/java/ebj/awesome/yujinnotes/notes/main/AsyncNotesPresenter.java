@@ -65,6 +65,7 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
     @Override
     public void updateNote(Note note) {
         repository.updateNote(note);
+        view.showNoteUpdated(note);
     }
 
     @Override
