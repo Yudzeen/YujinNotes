@@ -24,6 +24,8 @@ public interface NotesContract {
         void showNoteCreatedMessage();
         void showNoteDeletedMessage();
         void showNoteMoved(Note from, Note to);
+        void showProgressIndicator();
+        void hideProgressIndicator();
 
     }
 

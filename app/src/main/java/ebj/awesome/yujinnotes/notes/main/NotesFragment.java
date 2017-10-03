@@ -1,5 +1,6 @@
 package ebj.awesome.yujinnotes.notes.main;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,8 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     private ItemTouchHelper itemTouchHelper;
 
     private NotesContract.Presenter presenter;
+
+    private ProgressDialog progressDialog;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -225,6 +228,20 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         adapter.updateNote(to);
         adapter.notifyItemMoved(from.getPosition(), to.getPosition());
         Log.i(TAG, "Note ["+from.getPosition()+"]" + from.getTitle() +  " swapped with ["+to.getPosition()+"]" + to.getTitle());
+    }
+
+    @Override
+    public void showProgressIndicator() {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressIndicator() {
+        progressDialog.dismiss();
     }
 
     @Override

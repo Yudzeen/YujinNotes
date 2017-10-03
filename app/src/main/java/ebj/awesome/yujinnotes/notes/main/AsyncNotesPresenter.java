@@ -27,9 +27,11 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void loadNotes() {
+        view.showProgressIndicator();
         repository.getNotes(new AsyncNotesRepository.LoadNotesCallback() {
             @Override
             public void onNotesLoaded(List<Note> notes) {
+                    view.hideProgressIndicator();
                 if (notes.isEmpty()) {
                     view.displayNoNotes();
                 } else {
@@ -70,10 +72,11 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void deleteNote(Note note) {
+        view.showProgressIndicator();
         repository.deleteNote(note, new AsyncNotesRepository.DeleteNoteCallback() {
-
             @Override
             public void onNoteDeleted(Note note) {
+                view.hideProgressIndicator();
                 view.showNoteDeleted(note);
                 view.showNoteDeletedMessage();
             }
