@@ -31,7 +31,7 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
         repository.getNotes(new AsyncNotesRepository.LoadNotesCallback() {
             @Override
             public void onNotesLoaded(List<Note> notes) {
-                    view.hideProgressIndicator();
+                view.hideProgressIndicator();
                 if (notes.isEmpty()) {
                     view.displayNoNotes();
                 } else {
@@ -42,7 +42,8 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
-
+                view.hideProgressIndicator();
+                view.showFailedAccessingServerMessage();
             }
         });
     }
@@ -83,7 +84,8 @@ public class AsyncNotesPresenter implements NotesContract.Presenter {
 
             @Override
             public void onFailure() {
-
+                view.hideProgressIndicator();
+                view.showFailedAccessingServerMessage();
             }
         });
     }

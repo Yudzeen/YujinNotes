@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,6 +243,11 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     @Override
     public void hideProgressIndicator() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void showFailedAccessingServerMessage() {
+        Toast.makeText(getActivity(), "No response from web server.", Toast.LENGTH_LONG).show();
     }
 
     @Override

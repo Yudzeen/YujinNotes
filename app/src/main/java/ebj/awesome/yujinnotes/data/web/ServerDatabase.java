@@ -63,6 +63,7 @@ public class ServerDatabase implements AsyncNotesRepository {
 
             @Override
             public void onFailure(Call<JsonResponse> call, Throwable t) {
+                callback.onDataNotAvailable();
                 Log.i(TAG, "Failed to fetched notes.");
             }
         });
@@ -84,6 +85,7 @@ public class ServerDatabase implements AsyncNotesRepository {
 
             @Override
             public void onFailure(Call<JsonResponse> call, Throwable t) {
+                callback.onDataNotAvailable();
                 Log.i(TAG, "Failed to fetched note.");
             }
         });
@@ -139,6 +141,7 @@ public class ServerDatabase implements AsyncNotesRepository {
 
             @Override
             public void onFailure(Call<JsonResponse> call, Throwable t) {
+                callback.onFailure();
                 Log.i(TAG, "Delete failed.");
             }
         });

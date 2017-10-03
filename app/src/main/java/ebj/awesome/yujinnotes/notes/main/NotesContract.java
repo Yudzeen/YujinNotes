@@ -26,6 +26,7 @@ public interface NotesContract {
         void showNoteMoved(Note from, Note to);
         void showProgressIndicator();
         void hideProgressIndicator();
+        void showFailedAccessingServerMessage();
 
     }
 
