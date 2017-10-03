@@ -2,11 +2,13 @@
 A note app
 
 ## Features
+
+### User Interface
 * Create, view, edit and delete notes
 * Sort notes by dragging
 * Delete notes by swiping
 
-## Android concepts
+### Android concepts
 * MVP Architecture
-* Connect to web server w/ Retrofit
+* Access web server w/ Retrofit
 * Unit Testing w/ Mockito
