@@ -8,7 +8,7 @@ A note app
 * Sort notes by dragging
 * Delete notes by swiping
 
-### Android concepts
+### Concepts
 * MVP Architecture
 * Access web server w/ Retrofit
 * Unit Testing w/ Mockito
