@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.util.FieldsHelper;
@@ -25,8 +27,8 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
 
     private Note note;
 
-    private EditText titleField;
-    private EditText descField;
+    @BindView(R.id.titleField) EditText titleField;
+    @BindView(R.id.descField) EditText descField;
 
     private MenuItem editBtn;
     private MenuItem doneBtn;
@@ -46,8 +48,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        titleField = (EditText) findViewById(R.id.titleField);
-        descField = (EditText) findViewById(R.id.descField);
+        ButterKnife.bind(this);
 
         Bundle data = getIntent().getExtras();
         note = data.getParcelable(Note.TAG);

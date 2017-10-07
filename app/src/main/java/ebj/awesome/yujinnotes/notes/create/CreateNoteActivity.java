@@ -10,13 +10,15 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
 
 public class CreateNoteActivity extends AppCompatActivity implements CreateNoteContract.View {
 
-    private EditText titleField;
-    private EditText descField;
+    @BindView(R.id.titleField) EditText titleField;
+    @BindView(R.id.descField) EditText descField;
 
     private CreateNoteContract.Presenter presenter;
 
@@ -34,8 +36,7 @@ public class CreateNoteActivity extends AppCompatActivity implements CreateNoteC
         actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        titleField = (EditText) findViewById(R.id.titleField);
-        descField = (EditText) findViewById(R.id.descField);
+        ButterKnife.bind(this);
 
         titleField.requestFocus();
 

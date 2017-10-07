@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.util.NotesHelper;
@@ -87,13 +89,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public class ViewHolder extends RecyclerView.ViewHolder implements NoteViewHolder {
 
         public final View view;
-        public final TextView titleView;
-        public final TextView descView;
+        @BindView(R.id.title) TextView titleView;
+        @BindView(R.id.description) TextView descView;
         public Note note;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
+            ButterKnife.bind(this, view);
             titleView = (TextView) view.findViewById(R.id.title);
             descView = (TextView) view.findViewById(R.id.description);
         }
