@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import ebj.awesome.yujinnotes.calendar.CalendarFragment;
 import ebj.awesome.yujinnotes.notes.main.NotesFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     NotesFragment notesFragment;
+    CalendarFragment calendarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.nav_notes);
 
         notesFragment = NotesFragment.newInstance(1);
+        calendarFragment = CalendarFragment.newInstance();
 
         fragmentManager = getSupportFragmentManager();
 
@@ -64,8 +67,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_notes) {
             showNotesFragment();
         } else if (id == R.id.nav_calendar) {
-            fragmentManager.beginTransaction().remove(notesFragment).commit();
-            Toast.makeText(this, "Feature soon to be added.", Toast.LENGTH_LONG).show();
+            showCalendarFragment();
         } else if (id == R.id.nav_settings) {
             showSettingsActivity();
         }
@@ -80,6 +82,14 @@ public class MainActivity extends AppCompatActivity
                 R.id.fragment_container,
                 notesFragment,
                 notesFragment.getTag()
+        ).commit();
+    }
+
+    private void showCalendarFragment() {
+        fragmentManager.beginTransaction().replace(
+                R.id.fragment_container,
+                calendarFragment,
+                calendarFragment.getTag()
         ).commit();
     }
 
