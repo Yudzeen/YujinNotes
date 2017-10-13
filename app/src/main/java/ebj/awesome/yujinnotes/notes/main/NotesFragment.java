@@ -24,6 +24,7 @@ import java.util.List;
 
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.data.local.DatabaseHelper;
+import ebj.awesome.yujinnotes.data.local.ReactiveRepository;
 import ebj.awesome.yujinnotes.data.web.ServerDatabase;
 import ebj.awesome.yujinnotes.model.Note;
 import ebj.awesome.yujinnotes.notes.create.CreateNoteActivity;
@@ -81,7 +82,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         if (useWebServer) {
             presenter = new AsyncNotesPresenter(this, ServerDatabase.getInstance());
         } else {
-            presenter = new NotesPresenter(this, DatabaseHelper.getInstance(getActivity()));
+            presenter = new ReactiveNotesPresenter(this, new ReactiveRepository(DatabaseHelper.getInstance(getActivity())));
         }
 
         presenter.start();

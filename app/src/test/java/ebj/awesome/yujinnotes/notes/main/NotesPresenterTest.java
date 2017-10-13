@@ -111,19 +111,6 @@ public class NotesPresenterTest {
     }
 
     @Test
-    public void addNote_NoteMustBeLastPosition() {
-        Note note = new Note("Title", "Description");
-        final int numNotes = 3;
-        when(notesRepository.getNotesCount()).thenReturn(numNotes);
-
-        presenter.addNote(note);
-
-        // should be equal to 3 due to 0 indexing
-        Assert.assertEquals(note.getPosition(), numNotes);
-
-    }
-
-    @Test
     public void updateNote_updateInRepo() {
         Note note = new Note("Title", "Description");
 

@@ -43,7 +43,6 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void addNote(Note note) {
-        note.setPosition(notesRepository.getNotesCount());
         notesRepository.insertNote(note);
         view.showNoteCreated(note);
         view.showNoteCreatedMessage();

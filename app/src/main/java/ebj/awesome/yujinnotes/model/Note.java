@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Note implements Parcelable {
@@ -28,6 +29,8 @@ public class Note implements Parcelable {
     @Expose
     private int position;
 
+    private String reminder;
+
     public Note(String title) {
         this(UUID.randomUUID().toString(), title, "", -1);
     }
@@ -37,10 +40,15 @@ public class Note implements Parcelable {
     }
 
     public Note(String id, String title, String description, int position) {
+        this(id, title, description, position, "");
+    }
+
+    public Note(String id, String title, String description, int position, String reminder) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.position = position;
+        this.reminder = reminder;
     }
 
     public String getId() {
@@ -75,6 +83,14 @@ public class Note implements Parcelable {
         this.position = position;
     }
 
+    public String getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(String reminder) {
+        this.reminder = reminder;
+    }
+
     @Override
     public String toString() {
         return "ID: " + id + " Title: " + title + " Pos: " + position;
@@ -99,6 +115,7 @@ public class Note implements Parcelable {
         title = source.readString();
         description = source.readString();
         position = source.readInt();
+        reminder = source.readString();
     }
 
     @Override
@@ -112,6 +129,7 @@ public class Note implements Parcelable {
         dest.writeString(title);
         dest.writeString(description);
         dest.writeInt(position);
+        dest.writeString(reminder);
     }
 
 
