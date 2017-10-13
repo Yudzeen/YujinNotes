@@ -14,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ebj.awesome.yujinnotes.R;
 import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.model.NoteBuilder;
 
 public class CreateNoteActivity extends AppCompatActivity implements CreateNoteContract.View {
 
@@ -88,8 +89,10 @@ public class CreateNoteActivity extends AppCompatActivity implements CreateNoteC
     private void onNoteDone() {
         String title = titleField.getText().toString();
         String description = descField.getText().toString();
-        Note note = new Note(title, description);
-        presenter.onSubmit(note);
+
+        presenter.onSubmit(title, description);
     }
+
+
 
 }

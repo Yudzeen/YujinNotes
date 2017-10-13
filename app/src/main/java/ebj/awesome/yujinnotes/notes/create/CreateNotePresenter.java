@@ -1,8 +1,7 @@
 package ebj.awesome.yujinnotes.notes.create;
 
-import android.util.Log;
-
 import ebj.awesome.yujinnotes.model.Note;
+import ebj.awesome.yujinnotes.model.NoteBuilder;
 
 /**
  * Created by Yujin on 21/09/2017.
@@ -24,15 +23,19 @@ public class CreateNotePresenter implements CreateNoteContract.Presenter {
     }
 
     @Override
-    public void onSubmit(Note note) {
-        if (isTitleEmpty(note.getTitle())) {
-            view.showNoTitleError();
-        } else {
+    public void onSubmit(String title, String description) {
+        if (isTitleValid(title)) {
+            Note note = new NoteBuilder()
+                    .setTitle(title)
+                    .addDescription(description)
+                    .build();
             view.showNoteCreated(note);
+        } else {
+            view.showNoTitleError();
         }
     }
 
-    private boolean isTitleEmpty(String title) {
-        return title.equals("");
+    private boolean isTitleValid(String title) {
+        return !title.equals("");
     }
 }
