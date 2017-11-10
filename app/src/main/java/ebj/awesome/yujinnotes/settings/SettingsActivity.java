@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes;
+package ebj.awesome.yujinnotes.settings;
 
 
 import android.annotation.TargetApi;
@@ -19,10 +19,12 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import ebj.awesome.yujinnotes.MainActivity;
+import ebj.awesome.yujinnotes.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

@@ -1,4 +1,4 @@
-package ebj.awesome.yujinnotes;
+package ebj.awesome.yujinnotes.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
