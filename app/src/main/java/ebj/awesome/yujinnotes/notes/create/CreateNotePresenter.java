@@ -23,12 +23,8 @@ public class CreateNotePresenter implements CreateNoteContract.Presenter {
     }
 
     @Override
-    public void onSubmit(String title, String description) {
-        if (isTitleValid(title)) {
-            Note note = new NoteBuilder()
-                    .setTitle(title)
-                    .addDescription(description)
-                    .build();
+    public void onSubmit(Note note) {
+        if (isTitleValid(note.getTitle())) {
             view.showNoteCreated(note);
         } else {
             view.showNoTitleError();

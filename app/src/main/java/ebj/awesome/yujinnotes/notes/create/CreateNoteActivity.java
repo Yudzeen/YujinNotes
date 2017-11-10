@@ -90,7 +90,9 @@ public class CreateNoteActivity extends AppCompatActivity implements CreateNoteC
         String title = titleField.getText().toString();
         String description = descField.getText().toString();
 
-        presenter.onSubmit(title, description);
+        Note note = new Note(title, description);
+
+        presenter.onSubmit(note);
     }
 
 

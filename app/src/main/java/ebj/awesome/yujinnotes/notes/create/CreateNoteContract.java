@@ -19,7 +19,7 @@ public interface CreateNoteContract {
 
     interface Presenter extends BasePresenter {
 
-        void onSubmit(String title, String description);
+        void onSubmit(Note note);
 
     }
 }
