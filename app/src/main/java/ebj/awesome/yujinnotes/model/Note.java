@@ -28,6 +28,10 @@ public class Note implements Parcelable {
     @Expose
     private int position;
 
+    public Note(String title) {
+        this(title, "");
+    }
+
     public Note(String title, String description) {
         this(UUID.randomUUID().toString(), title, description, -1);
     }
