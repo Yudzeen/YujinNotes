@@ -64,9 +64,6 @@ public class NotesPresenter implements NotesContract.Presenter {
 
     @Override
     public void moveNote(Note from, Note to) {
-        NotesHelper.swapPosition(from, to);
-        notesRepository.updateNote(from);
-        notesRepository.updateNote(to);
         view.showNoteMoved(from, to);
     }
 

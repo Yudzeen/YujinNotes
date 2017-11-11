@@ -82,6 +82,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         presenter.updatePositions(notes);
     }
 
+    public void moveNote(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(notes, i, i + 1);
+                notifyItemMoved(i, i+1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(notes, i, i - 1);
+                notifyItemMoved(i, i-1);
+            }
+        }
+        presenter.updatePositions(notes);
+    }
+
     public void replaceNotes(List<Note> notes) {
         this.notes = notes;
     }

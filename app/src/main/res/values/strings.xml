@@ -81,5 +81,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="db_switch_key">database_switch</string>
+    <string name="toggle_view">Toggle View</string>
 
 </resources>

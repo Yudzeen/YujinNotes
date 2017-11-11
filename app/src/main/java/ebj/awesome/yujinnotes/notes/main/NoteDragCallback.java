@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 import ebj.awesome.yujinnotes.model.Note;
 
@@ -41,7 +42,10 @@ public class NoteDragCallback extends ItemTouchHelper.Callback {
         if (viewHolder instanceof NotesAdapter.NoteViewHolder && target instanceof NotesAdapter.NoteViewHolder) {
             NotesAdapter.NoteViewHolder noteViewHolder = (NotesAdapter.NoteViewHolder) viewHolder;
             NotesAdapter.NoteViewHolder noteTarget = (NotesAdapter.NoteViewHolder) target;
+
+            Log.i(TAG, "From: " + noteViewHolder.getNote() + " To: " + noteTarget.getNote());
             listener.onNoteMove(noteViewHolder.getNote(), noteTarget.getNote());
+
         }
 
         return true;

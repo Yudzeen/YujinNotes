@@ -40,10 +40,16 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     private static final String TAG = NotesFragment.class.getSimpleName();
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
+    public static final int LINEAR_LAYOUT = 0;
+    public static final int GRID_LAYOUT = 1;
+//    private static final String ARG_COLUMN_COUNT = "column-count";
 
-    private int columnCount = 1;
+//    private int columnCount = 1;
+    private int layout = LINEAR_LAYOUT;
 
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManager;
     private NotesAdapter adapter;
     private NotesAdapter.NoteInteractionListener listener;
     private ItemTouchHelper itemTouchHelper;
@@ -62,7 +68,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     public static NotesFragment newInstance(int columnCount) {
         NotesFragment fragment = new NotesFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+//        args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +78,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+//            columnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -92,15 +98,17 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.fragment_notes_list);
+        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_notes_list);
+
+        recyclerView.setHasFixedSize(true);
 
         Context context = recyclerView.getContext();
 
-        if (columnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
-        }
+        linearLayoutManager = new LinearLayoutManager(context);
+        gridLayoutManager = new GridLayoutManager(context, 2);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         adapter = new NotesAdapter(new ArrayList<Note>(), presenter, listener);
         recyclerView.setAdapter(adapter);
 
@@ -225,9 +233,7 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
 
     @Override
     public void showNoteMoved(Note from, Note to) {
-        adapter.updateNote(from);
-        adapter.updateNote(to);
-        adapter.notifyItemMoved(from.getPosition(), to.getPosition());
+        adapter.moveNote(from.getPosition(), to.getPosition());
         Log.i(TAG, "Note ["+from.getPosition()+"]" + from.getTitle() +  " swapped with ["+to.getPosition()+"]" + to.getTitle());
     }
 
@@ -273,6 +279,19 @@ public class NotesFragment extends Fragment implements NotesContract.View, Notes
     @Override
     public void onNoteSwiped(Note note) {
         presenter.deleteNote(note);
+    }
+
+    public int getLayout() {
+        return layout;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
+        if (layout == LINEAR_LAYOUT) {
+            recyclerView.setLayoutManager(linearLayoutManager);
+        } else {
+            recyclerView.setLayoutManager(gridLayoutManager);
+        }
     }
 
 }
