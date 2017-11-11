@@ -40,7 +40,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements NoteDetail
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.create_note_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_note);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
