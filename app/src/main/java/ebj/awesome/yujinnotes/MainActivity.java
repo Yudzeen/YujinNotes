@@ -17,6 +17,10 @@ import ebj.awesome.yujinnotes.calendar.CalendarFragment;
 import ebj.awesome.yujinnotes.notes.main.NotesFragment;
 import ebj.awesome.yujinnotes.settings.SettingsActivity;
 
+/**
+*   Yujin pogi
+*/
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
